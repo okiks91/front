@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { getCookie } from "../../export/utility.jsx";
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
+import { apiUrl } from '../../export/api.jsx';
 
 
 function OccupyFacilityModal({ setOccupyFacilityModal, roomName, floorName, onOccupied }){
@@ -43,7 +44,7 @@ function OccupyFacilityModal({ setOccupyFacilityModal, roomName, floorName, onOc
         const requesterDetails = [course, year, position].filter(Boolean).join(' - ');
 
         try {
-            const response = await fetch('http://localhost:5000/facility-occupy', {
+            const response = await fetch(apiUrl('/facility-occupy'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

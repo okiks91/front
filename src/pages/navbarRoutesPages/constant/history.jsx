@@ -5,6 +5,7 @@ import Navbar from '../../../components/navbar.jsx';
 
 
 import '../../../styles/navbarRoutes/history.css';
+import { apiUrl } from '../../../components/export/api.jsx';
 
 
 function History() {
@@ -14,9 +15,9 @@ function History() {
     const [facilityHistory, setFacilityHistory] = useState([]);
 
     const fetchHistory = () => {
-        fetch('http://localhost:5000/equipment-history')
+        fetch(apiUrl('/equipment-history'))
             .then(res => res.json()).then(data => setEquipmentHistory(data)).catch(console.error);
-        fetch('http://localhost:5000/facility-history')
+        fetch(apiUrl('/facility-history'))
             .then(res => res.json()).then(data => setFacilityHistory(data)).catch(console.error);
     };
 

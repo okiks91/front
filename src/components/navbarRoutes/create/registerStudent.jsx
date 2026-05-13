@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 
 import '../../../styles/login-register/registerStudent.css';
+import { apiUrl } from '../../export/api.jsx';
 
 
 function RegisterStudent({}){
@@ -25,7 +26,7 @@ function RegisterStudent({}){
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:5000/register-user', {
+            const response = await fetch(apiUrl('/register-user'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

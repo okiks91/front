@@ -10,6 +10,7 @@ import { getCookie } from '../../components/export/utility.jsx';
 
 
 import '../../styles/navbarRoutes/facilities/facility.css';
+import { apiUrl } from '../../components/export/api.jsx';
 
 
 function Facilities(){
@@ -56,7 +57,7 @@ function Facilities(){
                 setShowOverTimeModal(true);
                 newOverdue.forEach(o => {
                     autoEndTimers.current[o.id + '-end'] = setTimeout(() => {
-                        fetch(`http://localhost:5000/facility-occupancy/${o.id}/end`, { method: 'POST' })
+                        fetch(apiUrl(`/facility-occupancy/${o.id}/end`), { method: 'POST' })
                             .then(() => {
                                 setOverTimeItems([{ name: o.roomName, endTime: o.endTime, id: o.id, ended: true }]);
                                 setShowOverTimeModal(true);
@@ -71,7 +72,7 @@ function Facilities(){
     };
 
     const fetchOccupancies = () => {
-        fetch('http://localhost:5000/facility-occupancies')
+        fetch(apiUrl('/facility-occupancies'))
             .then(res => res.json())
             .then(data => {
                 setOccupancies(data);
@@ -94,7 +95,7 @@ function Facilities(){
                             });
                             setShowOverTimeModal(true);
                             autoEndTimers.current[o.id + '-end'] = setTimeout(() => {
-                                fetch(`http://localhost:5000/facility-occupancy/${o.id}/end`, { method: 'POST' })
+                                fetch(apiUrl(`/facility-occupancy/${o.id}/end`), { method: 'POST' })
                                     .then(() => {
                                         setOverTimeItems([{ name: o.roomName, endTime: o.endTime, id: o.id, ended: true }]);
                                         setShowOverTimeModal(true);
@@ -114,7 +115,7 @@ function Facilities(){
     fetchOccupanciesRef.current = fetchOccupancies;
 
     const fetchReservations = () => {
-        fetch('http://localhost:5000/facility-reservations')
+        fetch(apiUrl('/facility-reservations'))
             .then(res => res.json())
             .then(data => setReservations(data))
             .catch(err => console.error(err));
@@ -122,7 +123,7 @@ function Facilities(){
 
     const handleMarkAvailable = async (id) => {
         try {
-            await fetch(`http://localhost:5000/facility-reservation/${id}`, { method: 'DELETE' });
+            await fetch(apiUrl(`/facility-reservation/${id}`), { method: 'DELETE' });
             fetchReservations();
         } catch (err) { console.error(err); }
     };

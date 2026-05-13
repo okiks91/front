@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import '../../../styles/profile/changePasswordModal.css';
 import { getCookie } from "../../export/utility.jsx";
+import { apiUrl } from '../../export/api.jsx';
 
 
 function ChangePasswordModal({ setModalChangePassword }){
@@ -42,7 +43,7 @@ function ChangePasswordModal({ setModalChangePassword }){
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/change-pin', {
+            const response = await fetch(apiUrl('/change-pin'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, currentPin, newPin }),

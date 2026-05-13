@@ -8,6 +8,7 @@ import { getCookie } from '../../components/export/utility.jsx';
 
 
 import '../../styles/navbarRoutes/equipment/equipments.css';
+import { apiUrl } from '../../components/export/api.jsx';
 
 
 function Equipments(){
@@ -50,7 +51,7 @@ function Equipments(){
             overdue.forEach(r => {
                 if (!autoEndTimers.current[r.id]) {
                     autoEndTimers.current[r.id] = setTimeout(() => {
-                        fetch(`http://localhost:5000/equipment-request/${r.id}/mark-available`, { method: 'POST' })
+                        fetch(apiUrl(`/equipment-request/${r.id}/mark-available`), { method: 'POST' })
                             .then(() => fetchAll())
                             .catch(console.error);
                         delete autoEndTimers.current[r.id];
@@ -63,9 +64,9 @@ function Equipments(){
     const fetchAll = useCallback(async () => {
         try {
             const [pendingRes, approvedRes, statusesRes] = await Promise.all([
-                fetch('http://localhost:5000/equipment-requests?status=pending'),
-                fetch('http://localhost:5000/equipment-requests?status=approved'),
-                fetch('http://localhost:5000/equipment-statuses'),
+                fetch(apiUrl('/equipment-requests?status=pending')),
+                fetch(apiUrl('/equipment-requests?status=approved')),
+                fetch(apiUrl('/equipment-statuses')),
             ]);
 
             if (pendingRes.ok) setPendingRequests(await pendingRes.json());
@@ -85,7 +86,7 @@ function Equipments(){
     const handleApprove = async (id) => {
         setLoadingAction(id + '-approve');
         try {
-            await fetch(`http://localhost:5000/equipment-request/${id}/approve`, { method: 'POST' });
+            await fetch(apiUrl(`/equipment-request/${id}/approve`), { method: 'POST' });
             await fetchAll();
         } catch (e) { console.error(e); }
         setLoadingAction(null);
@@ -94,7 +95,7 @@ function Equipments(){
     const handleDecline = async (id) => {
         setLoadingAction(id + '-decline');
         try {
-            await fetch(`http://localhost:5000/equipment-request/${id}/decline`, { method: 'POST' });
+            await fetch(apiUrl(`/equipment-request/${id}/decline`), { method: 'POST' });
             await fetchAll();
         } catch (e) { console.error(e); }
         setLoadingAction(null);
@@ -103,7 +104,7 @@ function Equipments(){
     const handleMarkAvailable = async (id) => {
         setLoadingAction(id + '-available');
         try {
-            await fetch(`http://localhost:5000/equipment-request/${id}/mark-available`, { method: 'POST' });
+            await fetch(apiUrl(`/equipment-request/${id}/mark-available`), { method: 'POST' });
             await fetchAll();
         } catch (e) { console.error(e); }
         setLoadingAction(null);
@@ -112,7 +113,7 @@ function Equipments(){
     const handleRemoveStatus = async (id) => {
         setLoadingAction(id + '-remove');
         try {
-            await fetch(`http://localhost:5000/equipment-status/${id}`, { method: 'DELETE' });
+            await fetch(apiUrl(`/equipment-status/${id}`), { method: 'DELETE' });
             await fetchAll();
         } catch (e) { console.error(e); }
         setLoadingAction(null);

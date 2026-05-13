@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { toast } from "react-toastify";
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
+import { apiUrl } from '../../export/api.jsx';
 
 
 function ReserveEquipmentModal({ setModalType, equipmentName, onStatusChanged }){
@@ -25,7 +26,7 @@ function ReserveEquipmentModal({ setModalType, equipmentName, onStatusChanged })
         const isUnavailable = status === 'Unavailable';
 
         try {
-            const response = await fetch('http://localhost:5000/equipment-set-status', {
+            const response = await fetch(apiUrl('/equipment-set-status'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

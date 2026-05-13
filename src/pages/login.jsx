@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { setCookie } from '../components/export/utility.jsx';
 import '../styles/login-register/login.css';
+import { apiUrl } from '../components/export/api.jsx';
 
 
 function Login(){
@@ -16,7 +17,7 @@ function Login(){
         const loginData = { email, password };
 
         try {
-            const response = await fetch('http://localhost:5000/login', {
+            const response = await fetch(apiUrl('/login'), {
                 method: 'POST',
                 headers: { 'Content-type': 'application/json' },
                 body: JSON.stringify(loginData)

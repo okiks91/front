@@ -5,6 +5,7 @@ import Navbar from '../../../components/navbar.jsx';
 
 
 import '../../../styles/navbarRoutes/tables.css';
+import { apiUrl } from '../../../components/export/api.jsx';
 
 
 function Tables() {
@@ -16,13 +17,13 @@ function Tables() {
     const [facilityReservations, setFacilityReservations] = useState([]);
 
     const fetchAll = () => {
-        fetch('http://localhost:5000/equipment-requests?status=approved')
+        fetch(apiUrl('/equipment-requests?status=approved'))
             .then(res => res.json()).then(data => setEquipmentRequests(data)).catch(console.error);
-        fetch('http://localhost:5000/equipment-statuses')
+        fetch(apiUrl('/equipment-statuses'))
             .then(res => res.json()).then(data => setEquipmentStatuses(data)).catch(console.error);
-        fetch('http://localhost:5000/facility-occupancies')
+        fetch(apiUrl('/facility-occupancies'))
             .then(res => res.json()).then(data => setFacilityOccupancies(data)).catch(console.error);
-        fetch('http://localhost:5000/facility-reservations')
+        fetch(apiUrl('/facility-reservations'))
             .then(res => res.json()).then(data => setFacilityReservations(data)).catch(console.error);
     };
 

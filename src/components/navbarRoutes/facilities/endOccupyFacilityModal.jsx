@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { toast } from "react-toastify";
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
+import { apiUrl } from '../../export/api.jsx';
 
 
 function EndOccupyFacilityModal({ setEndOccupyFacilityModal, occupancyId, onEnded }){
@@ -13,7 +14,7 @@ function EndOccupyFacilityModal({ setEndOccupyFacilityModal, occupancyId, onEnde
         setLoading(true);
 
         try {
-            const response = await fetch(`http://localhost:5000/facility-occupancy/${occupancyId}/end`, {
+            const response = await fetch(apiUrl(`/facility-occupancy/${occupancyId}/end`), {
                 method: 'POST',
             });
 
