@@ -1,4 +1,4 @@
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const API_BASE_URL = 'https://backend-1-3a9p.onrender.com';
 
 export const apiUrl = (path) => {
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
