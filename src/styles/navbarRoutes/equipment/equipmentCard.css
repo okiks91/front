@@ -1,0 +1,46 @@
+.equipmentCard{
+    box-shadow: 8px 8px 3px 0px rgba(0,0,0,0.1);
+    width: 400px;
+    height: 500px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: 20px 50px 20px 50px;
+}
+
+.equipmentCard:hover{
+    box-shadow: 4px 4px 3px 0px rgb(63, 63, 63);
+    transition: all 0.2s ease;
+    transform: scale(1.02);
+}
+
+
+.equipmentCard .card-image{
+    width: 400px;
+    height: 500px;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.equipmentCard .equipment-name{
+    color: #2f2f2f;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.equipmentCard .choice-equipment{
+    border: none;
+    padding: 10px;
+    background-color: maroon;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.equipmentCard .choice-equipment:hover{
+    color: black;
+    background-color: gold;
+}

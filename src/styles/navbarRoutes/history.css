@@ -1,0 +1,140 @@
+.tableHistory-equipment-main-container, .tableHistory-facility-main-container{
+    margin-left: 220px;
+}
+
+.whole-container{
+    padding: 70px 30px 0px 30px;
+}
+
+.tableHistory-select{
+    display: flex;
+    justify-content: center;
+}
+.tableHistory-select select{
+    margin-top: 30px;
+    background-color: maroon;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    box-sizing: border-box;
+    border: none;
+    font-weight: 600;
+}
+
+.tableHistory-select select option{
+    text-align: left;
+}
+
+.equipment-tableHistory-container{
+    background-color: white;
+    border: 1px solid white;
+    box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.1);
+    padding: 30px 40px 30px 40px;
+    min-height: 580px;
+    max-height: auto;
+}
+
+.equipment-tableHistory-container h1{
+    font-size: 25px;
+    color: maroon;
+    margin-bottom: 10px;
+}
+
+.equipment-tableHistory-container hr{
+    border: 1px solid rgb(204, 204, 204);
+}
+
+.equipment-tableHistory{
+    margin-top: 30px;
+    border: 0.1px solid rgb(204, 204, 204);
+    width: 100%;
+    border-collapse:separate;
+    border-spacing: 10px 10px;      
+}
+
+.equipment-tableHistory-header th{
+    background-color: maroon;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.equipment-tableHistory-body td{
+    background-color: rgb(240, 240, 240);
+    padding: 10px;
+    text-align: center;   
+}
+
+.equipment-tableHistory-body .in-use-btn{
+    background-color: maroon;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.equipment-tableHistory-body .in-use-btn:hover{
+    background-color: gold;
+    color: black;
+}
+
+
+
+
+
+
+
+.facility-tableHistory-container{
+    background-color: white;
+    border: 1px solid white;
+    box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.1);
+    padding: 30px 40px 30px 40px;
+    min-height: 580px;
+    max-height: auto;
+}
+
+.facility-tableHistory-container h1{
+    font-size: 25px;
+    color: maroon;
+    margin-bottom: 10px;
+}
+
+.facility-tableHistory-container hr{
+    border: 1px solid rgb(204, 204, 204);
+}
+
+.facilities-tableHistory{
+    margin-top: 30px;
+    border: 0.1px solid rgb(204, 204, 204);
+    width: 100%;
+    border-collapse:separate;
+    border-spacing: 10px 10px;      
+}
+
+.facilities-tableHistory-header th{
+    background-color: maroon;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.facilities-tableHistory-body td{
+    background-color: rgb(240, 240, 240);
+    padding: 10px;
+    text-align: center;   
+}
+
+.facilities-tableHistory-body .in-use-btn{
+    background-color: maroon;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.facilities-tableHistory-body .in-use-btn:hover{
+    background-color: gold;
+    color: black;
+}

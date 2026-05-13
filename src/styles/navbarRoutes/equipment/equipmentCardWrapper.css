@@ -1,0 +1,26 @@
+.equipmentCardWrapper{
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+
+/* width */
+.equipmentCardWrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.equipmentCardWrapper::-webkit-scrollbar-track {
+    background: maroon;
+}
+
+/* Handle */
+.equipmentCardWrapper::-webkit-scrollbar-thumb {
+    background: gold;
+}
+
+/* Handle on hover */
+.equipmentCardWrapper::-webkit-scrollbar-thumb:hover {
+    background: #dcd800;
+}

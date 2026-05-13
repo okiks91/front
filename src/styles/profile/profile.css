@@ -1,0 +1,156 @@
+.profile-main-container{
+    padding: 60px 30px 0px 30px;
+    margin-left: 220px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.profile-container{
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    align-items: center;
+    padding: 20px;
+    border: 1px transparent;
+    box-shadow: 9px 2px 15px -1px rgba(0,0,0,0.34);
+    width: 520px;
+}
+
+.profile-container{
+    position: relative;
+    background-color: white;
+    border: 1px solid transparent;
+}
+.profile-pic{
+    border: 1px solid transparent;
+    width: 140px;
+    border-radius: 200px;
+}
+
+.profile-name{
+    margin-top: 25px;
+    font-size: 28px;
+    color: maroon;
+}
+
+.update-btn{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    border: none;
+    background-color: rgb(248, 248, 248);
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.update-btn:hover{
+    color: maroon;
+    background-color: rgb(228, 227, 227);
+}
+
+.profile-details{
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    align-items: center;
+    padding: 20px;
+    border: 1px transparent;
+    box-shadow: 9px 2px 15px -1px rgba(0,0,0,0.34);
+    width: 520px;
+}
+
+
+.profile-data {
+    width: 100%;
+    max-width: 500px;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.profile-data-row {
+    background-color: #f5f7fa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-data tr:last-child {
+    border-bottom: none;
+}
+
+.profile-data-info {
+    padding: 14px 18px;
+    font-size: 14px;
+}
+
+.profile-data-info:first-child {
+    font-weight: 600;
+    color: #555;
+    width: 40%;
+}
+
+.profile-data-info:last-child {
+    color: maroon;
+}
+
+/* Hover effect */
+.profile-data tr:hover {
+    background-color: #f0f4ff;
+    transition: 0.2s ease;
+}
+
+
+
+.profile-container-systemSchoolAdmin{
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    align-items: center;
+    padding: 20px;
+    border: 1px #ccc;
+    border-radius: 10px;
+    box-shadow: 9px 2px 15px -1px rgba(0,0,0,0.34);
+    width: 450px;
+    margin-top: 100px;
+}
+
+.profile-container-systemSchoolAdmin{
+    position: relative;
+    background-color: white;
+    border: 1px solid transparent;
+}
+.profile-pic-systemSchoolAdmin{
+    border: 1px solid transparent;
+    width: 180px;
+    border-radius: 200px;
+    margin-top: 10px;
+}
+
+.profile-name-systemSchoolAdmin{
+    margin-top: 40px;
+    font-size: 35px;
+    color: maroon;
+}
+
+.update-btn-systemSchoolAdmin{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    border: none;
+    background-color: rgb(248, 248, 248);
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.update-btn-systemSchoolAdmin:hover{
+    color: maroon;
+    background-color: rgb(228, 227, 227);
+}

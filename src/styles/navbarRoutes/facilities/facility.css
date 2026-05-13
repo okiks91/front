@@ -1,0 +1,45 @@
+header, main, .facility-footer{
+    margin-left: 220px;
+}
+
+.facilities{
+    display: flex;
+    justify-content : center;
+}
+
+.facilities select{
+    margin-top: 30px;
+    background-color: maroon;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    box-sizing: border-box;
+    border: none;
+    font-weight: 600;
+}
+
+.facilities option{
+    text-align: left;
+}
+
+.facility-content{
+    padding: 20px 30px 20px 30px;
+}
+
+
+.facility-footer{
+    margin-top: 20px;
+    color: maroon;
+    padding: 20px 30px 20px 30px;
+}
+
+.facility-footer h1{
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+
+.facility-footer p{
+    text-align: center;
+    font-size: 15px;
+}

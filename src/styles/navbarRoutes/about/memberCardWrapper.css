@@ -1,0 +1,26 @@
+.memberCardWrapper{
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+
+/* width */
+.memberCardWrapper::-webkit-scrollbar {
+    width: 2px;
+}
+
+/* Track */
+.memberCardWrapper::-webkit-scrollbar-track {
+    background: gold;
+}
+
+/* Handle */
+.memberCardWrapper::-webkit-scrollbar-thumb {
+    background: rgb(245, 245, 245);
+}
+
+/* Handle on hover */
+.memberCardWrapper::-webkit-scrollbar-thumb:hover {
+    background: black;
+}

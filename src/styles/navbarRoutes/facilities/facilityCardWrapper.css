@@ -1,0 +1,26 @@
+.facilityCardWrapper{
+    display: flex;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+
+/* width */
+.facilityCardWrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.facilityCardWrapper::-webkit-scrollbar-track {
+    background: maroon;
+}
+
+/* Handle */
+.facilityCardWrapper::-webkit-scrollbar-thumb {
+    background: gold;
+}
+
+/* Handle on hover */
+.facilityCardWrapper::-webkit-scrollbar-thumb:hover {
+    background: #dcd800;
+}

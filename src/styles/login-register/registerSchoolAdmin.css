@@ -1,0 +1,102 @@
+.registerSchoolAdmins-container{
+    position: fixed;
+    background-color: rgb(77, 0, 0);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid transparent;
+    padding: 0px;
+    border-radius: 15px;
+    display: flex;
+    height: 600px;
+    width: 500px;
+    margin-top: 120px;
+    margin-bottom: auto;
+    margin-right: auto;
+    margin-left: 610px;
+    -webkit-box-shadow: inset -50px -30px 50px -30px #000000; 
+    box-shadow: inset -50px -30px 50px -30px rgb(179, 155, 0);
+}
+
+.register-schoolAdmin{
+    flex: 1;
+    color: black;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.register-schoolAdmin .create{
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding-bottom: 30px;
+}
+
+.register-schoolAdmin .create h1{
+    font-weight: 500;
+    letter-spacing: 1px;
+    font-size: 30px;
+    color: white;
+    padding: 0;
+}
+
+.register-schoolAdmin .create h2{
+    font-weight: 600;
+    color: gold;
+    font-size: 45px;
+    letter-spacing: 1px;
+}
+
+.form-schoolAdmin .schoolAdminName{
+    display: flex;
+    gap: 20px;
+}
+.form-schoolAdmin .schoolAdminName .schoolAdmin-credentials-name{
+    border-radius: 5px;
+    text-align: center;
+    width: 140px;
+    padding: 15px;
+    box-sizing: border-box;
+    border: none;
+    font-weight: 600;
+}
+
+.form-schoolAdmin .schoolAdmin-credentials{
+    width: 300px;
+    border-radius: 5px;
+    padding: 15px;
+    box-sizing: border-box;
+    border: none;
+    text-align: center;
+    font-weight: 600;
+}
+
+.form-schoolAdmin input::placeholder{
+    color: rgb(172, 172, 172);
+}
+
+.registerSchoolAdmins-btns .register{
+    border-radius: 5px;
+    margin-top: 20px;
+    width: 300px;
+    padding: 15px;
+    border: none;
+    background-color: gold;
+    color: black;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2 ease;
+    font-size: small;
+}
+
+.registerSchoolAdmins-btns .register:hover{
+    background-color: rgba(221, 191, 23, 0.821);
+    color: rgb(255, 255, 255);
+}

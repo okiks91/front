@@ -1,0 +1,127 @@
+.registerStudent-container{
+    position: fixed;
+    background-color: rgb(77, 0, 0);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid transparent;
+    padding: 0px;
+    border-radius: 15px;
+    display: flex;
+    height: 600px;
+    width: 500px;
+    margin-top: 120px;
+    margin-bottom: auto;
+    margin-right: auto;
+    margin-left: 610px;
+    -webkit-box-shadow: inset -50px -30px 50px -30px #000000; 
+    box-shadow: inset -50px -30px 50px -30px rgb(179, 155, 0);
+}
+
+.register-student{
+    flex: 1;
+    color: black;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.register-student .create{
+    margin: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.register-student .create h1{
+    font-weight: 500;
+    letter-spacing: 1px;
+    font-size: 30px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.register-student .create h2{
+    font-weight: 600;
+    color: gold;
+    font-size: 45px;
+    letter-spacing: 1px;
+}
+
+
+.form-student .student-credentials{
+    width: 300px;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: none;
+    text-align: center;
+    font-weight: 600;
+}
+
+.form-student .studentName{
+    display: flex;
+    gap: 20px;
+}
+.form-student .studentName .student-credentials-name{
+    text-align: center;
+    width: 140px;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: none;
+    font-weight: 600;
+}
+
+.form-student input::placeholder{
+    color: rgb(172, 172, 172);
+}
+
+.form-student .oneline{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.form-student .oneline .year-role{
+    border-radius: 5px;
+    text-align: center;
+    width: 140px;
+    padding: 15px;
+    box-sizing: border-box;
+    border: none;
+    font-weight: 600;
+}
+
+.form-student .oneline option{
+    text-align: left;
+}
+
+.registerStudent-btns {
+    display: flex;
+    gap: 10px;
+}
+
+.registerStudent-btns .register{
+    border-radius: 5px;
+    width: 300px;
+    padding: 15px;
+    border: none;
+    background-color: gold;
+    color: black;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2 ease;
+    font-size: small;
+}
+
+.registerStudent-btns .register:hover{
+    background-color: rgba(221, 191, 23, 0.821);
+    color: rgb(255, 255, 255);
+}

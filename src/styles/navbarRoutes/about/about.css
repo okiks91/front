@@ -1,0 +1,159 @@
+/* Home-Header */
+header, main, .home-footer{
+    margin-left: 220px;
+}
+
+.home-header{
+    height: 100vh;
+    background-image: linear-gradient(rgba(94, 0, 0, 0.768), rgb(0, 0, 0)), url("../../../assets/images/header.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.home-header .header-textbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: white;
+    flex-direction: column;
+}
+
+.header-textbox h1{
+    transition: 0.7s ease;
+    font-size: 62px;
+}
+
+.header-textbox h1:hover{
+    color: gold;
+}
+
+.header-textbox p{
+    margin: 10px 0 40px;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}
+
+
+
+/* Home-Content*/
+.home-content{
+    text-align: center;   
+}
+
+.system-function{
+    padding: 105px 45px;
+}
+
+.system-function h1{
+    font-size: 36px;
+    font-weight: 600;
+}
+
+.system-function p{
+    color:#777;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 22px;
+    padding: 10px;
+}
+
+.function{
+    margin-top: 70px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.function-col{
+    flex-basis: 49%;
+    background: #ffbbbb98;
+    border-radius: 10px;
+    margin-bottom: 5%;
+    padding: 20px 12px;
+    box-sizing: border-box;
+    transition: 0.5s;
+    height: auto;
+}
+
+.function-col h3{
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.function-col p{
+    color:#777;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 22px;
+    padding: 10px;
+}
+
+.function-col:hover{
+    box-shadow: 0 0 20px 0px rgba(94, 0, 0, 0.768);
+}
+
+.project-team{
+    background-color: maroon;
+    padding: 105px 45px 200px 45px;
+}
+
+.project-team h1{
+    margin-bottom: 70px;
+    font-size: 50px;
+    color: white;
+    transition: 0.7s ease;
+}
+
+.project-team h1:hover{
+    color: gold;
+}
+
+
+/* Home-Footer*/
+.home-footer{
+    background-color: maroon;
+    padding: 10px;
+}
+
+.home-footer h4{
+    color:white;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+
+.home-footer p{
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 22px;
+    padding: 0px 30px 0px 30px
+}
+
+.icons-footer{
+    padding: 10px;
+    margin-top: 0px;
+    color: black;
+    font-size: 25px;
+    gap: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icons-footer .icons{
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-bottom: 10px;
+    transition: 0.2s ease;
+}
+
+.icons-footer .icons:hover{
+    color: gold;
+}
