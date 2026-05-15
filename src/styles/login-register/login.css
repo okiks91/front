@@ -20,8 +20,6 @@
     flex-direction: column;
     justify-content: center;
     border-radius: 8px;
-    -webkit-box-shadow: inset -50px -30px 50px -30px #000000; 
-    box-shadow: inset -50px -30px 50px -30px rgb(179, 155, 0);
 }
 
 .form-login .greetings h1{

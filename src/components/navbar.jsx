@@ -9,6 +9,8 @@ import { getCookie, deleteCookie } from './export/utility.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faRightFromBracket,
+    faBars,
+    faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import '../styles/navbarRoutes/navbar.css';
 
@@ -17,6 +19,7 @@ function Navbar(){
 
     const navigate = useNavigate();
     const [user, setUser] = useState();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const linkHandler = (event, navigateLink) => {
         event.preventDefault();
@@ -41,7 +44,8 @@ function Navbar(){
     }, [])
 
     return(
-        <nav className='sidebar'>
+        <nav className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
+             <FontAwesomeIcon onClick={() => setIsMenuOpen(!isMenuOpen)} className="icons menu-icon" icon={isMenuOpen ? faXmark : faBars} /> 
             <div className="logo-container">
                 <a href='https://westmead-is.edu.ph/' target='_blank'><img className="sidebar-logo" src={schoolUrl}></img></a>
             </div>

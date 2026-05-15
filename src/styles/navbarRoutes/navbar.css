@@ -1,9 +1,10 @@
 .sidebar{
     position: fixed;
     width: 220px;
-    height: 100vh;
+    height: 100%;
     background-color: rgb(85, 0, 0);
     padding-top: 20px;
+    z-index: 1;
 }
 
 .sidebar-logo{
@@ -76,6 +77,10 @@
 
 .nav-links::-webkit-scrollbar {
     display: none; /* Chrome, Safari */
+}
+
+.menu-icon{
+    display: none;
 }
 
 @media (max-width: 480px) {
