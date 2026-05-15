@@ -15,7 +15,7 @@ function EquipmentCard({
     onStatusChanged
 }){
 
-    const user = JSON.parse(getCookie("user"));
+    const user = JSON.parse(getCookie("user") || 'null');
     const role = user?.role;
     const [modalType, setModalType] = useState(null);
 
@@ -48,7 +48,11 @@ function EquipmentCard({
             </div>
 
             {modalType === "request" && (
-                <RequestEquipmentModal setModalType={setModalType} equipmentName={equipmentName}/>
+                <RequestEquipmentModal
+                    setModalType={setModalType}
+                    equipmentName={equipmentName}
+                    onRequestSubmitted={onStatusChanged}
+                />
             )}
 
             {modalType === "reserve" && (

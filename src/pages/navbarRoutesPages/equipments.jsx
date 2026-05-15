@@ -10,11 +10,23 @@ import { authFetch, getCookie, isBookingPastEnd } from '../../components/export/
 
 import '../../styles/navbarRoutes/equipment/equipments.css';
 
+const readArrayResponse = async (response, keys = []) => {
+    const data = await response.json();
+    if (Array.isArray(data)) return data;
+
+    for (const key of keys) {
+        if (Array.isArray(data?.[key])) return data[key];
+    }
+
+    return [];
+};
+
 
 function Equipments(){
 
-    const user = JSON.parse(getCookie("user"));
+    const user = JSON.parse(getCookie("user") || 'null');
     const role = user?.role;
+    const canRequestEquipment = role === "studentOfficer" || role === "schoolFaculty";
 
     const courseLabels = {
         CpE: "BS Computer Engineering", ME: "BS Mechanical Engineering",
@@ -25,19 +37,21 @@ function Equipments(){
     const year = user?.year ? `${user.year}${['st','nd','rd'][user.year - 1] || 'th'} Year` : '';
     const userCourseYear = [course, year].filter(Boolean).join(' - ');
 
-    const isVisible = (record) =>
+    const isVisible = useCallback((record) =>
         record.requesterEmail === user?.email ||
-        (userCourseYear && record.requesterDetails?.startsWith(userCourseYear));
+        (userCourseYear && record.requesterDetails?.startsWith(userCourseYear)), [user?.email, userCourseYear]);
 
     const [pendingRequests, setPendingRequests] = useState([]);
     const [approvedRequests, setApprovedRequests] = useState([]);
     const [equipmentStatuses, setEquipmentStatuses] = useState([]);
+    const [fetchError, setFetchError] = useState('');
     const [loadingAction, setLoadingAction] = useState(null);
     const [overTimeItems, setOverTimeItems] = useState([]);
     const [showOverTimeModal, setShowOverTimeModal] = useState(false);
     const autoEndTimers = useRef({});
+    const fetchAllRef = useRef(null);
 
-    const checkOvertime = (approved) => {
+    const checkOvertime = useCallback((approved) => {
         const overdue = approved.filter(r => isVisible(r) && isBookingPastEnd(r));
         if (overdue.length > 0) {
             setOverTimeItems(overdue.map(r => ({ name: r.equipmentName, endTime: r.endTime, id: r.id })));
@@ -46,14 +60,14 @@ function Equipments(){
                 if (!autoEndTimers.current[r.id]) {
                     autoEndTimers.current[r.id] = setTimeout(() => {
                         authFetch(`/equipment-request/${r.id}/mark-available`, { method: 'POST' })
-                            .then(() => fetchAll())
+                            .then(() => fetchAllRef.current?.())
                             .catch(console.error);
                         delete autoEndTimers.current[r.id];
                     }, 5 * 60 * 1000);
                 }
             });
         }
-    };
+    }, [isVisible]);
 
     const fetchAll = useCallback(async () => {
         try {
@@ -63,13 +77,26 @@ function Equipments(){
                 authFetch('/equipment-statuses'),
             ]);
 
-            if (pendingRes.ok) setPendingRequests(await pendingRes.json());
-            if (approvedRes.ok) { const data = await approvedRes.json(); setApprovedRequests(data); checkOvertime(data); }
-            if (statusesRes.ok) setEquipmentStatuses(await statusesRes.json());
+            if (!pendingRes.ok || !approvedRes.ok || !statusesRes.ok) {
+                throw new Error('Could not load equipment request data.');
+            }
+
+            const pendingData = await readArrayResponse(pendingRes, ['requests', 'equipmentRequests', 'pendingRequests', 'data']);
+            const approvedData = await readArrayResponse(approvedRes, ['requests', 'equipmentRequests', 'approvedRequests', 'data']);
+            const statusesData = await readArrayResponse(statusesRes, ['statuses', 'equipmentStatuses', 'data']);
+
+            setPendingRequests(pendingData);
+            setApprovedRequests(approvedData);
+            setEquipmentStatuses(statusesData);
+            setFetchError('');
+            checkOvertime(approvedData);
         } catch (error) {
             console.error('Fetch error:', error);
+            setFetchError(error.message || 'Could not load equipment request data.');
         }
-    }, []);
+    }, [checkOvertime]);
+
+    fetchAllRef.current = fetchAll;
 
     useEffect(() => {
         fetchAll();
@@ -151,7 +178,15 @@ function Equipments(){
                     <EquipmentCardWrapper equipmentStatuses={equipmentStatuses} onStatusChanged={fetchAll}/>
                 </section>
 
-                {role === "studentOfficer" && (
+                {fetchError && (
+                    <section className='equipmentRequest-table-container'>
+                        <h1>Equipment Requests</h1>
+                        <hr/>
+                        <p style={{ padding: '16px 0', color: 'maroon' }}>{fetchError}</p>
+                    </section>
+                )}
+
+                {canRequestEquipment && (
                     <section className='equipmentRequest-table-container'>
                         <h1>Currently Used Equipment</h1>
                         <hr/>
@@ -177,6 +212,41 @@ function Equipments(){
                                         <td>{req.requesterName}</td>
                                         <td>{formatTime(req.startTime)}</td>
                                         <td>{formatTime(req.endTime)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </section>
+                )}
+
+                {canRequestEquipment && (
+                    <section className='equipmentRequest-table-container'>
+                        <h1>My Pending Equipment Requests</h1>
+                        <hr/>
+                        <table className="equipment-table">
+                            <thead className='equipment-table-header'>
+                                <tr>
+                                    <th>EQUIPMENT</th>
+                                    <th>DATE</th>
+                                    <th>START-TIME</th>
+                                    <th>END-TIME</th>
+                                    <th>PURPOSE</th>
+                                </tr>
+                            </thead>
+                            <tbody className='equipment-table-body'>
+                                {pendingRequests.filter(isVisible).length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
+                                            No pending requests.
+                                        </td>
+                                    </tr>
+                                ) : pendingRequests.filter(isVisible).map((req) => (
+                                    <tr key={req.id}>
+                                        <td>{req.equipmentName}</td>
+                                        <td>{req.date}</td>
+                                        <td>{formatTime(req.startTime)}</td>
+                                        <td>{formatTime(req.endTime)}</td>
+                                        <td>{req.purpose}</td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -11,7 +11,7 @@ import '../../../styles/navbarRoutes/equipment/equipmentCardWrapper.css';
 
 function EquipmentCardWrapper({ equipmentStatuses = [], onStatusChanged }){
 
-    const user = JSON.parse(getCookie("user"));
+    const user = JSON.parse(getCookie("user") || 'null');
     const role = user?.role;
     const unavailableEquipment = new Set(
         equipmentStatuses

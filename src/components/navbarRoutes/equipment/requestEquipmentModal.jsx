@@ -5,7 +5,7 @@ import { authFetch, getCookie, getCurrentTimeString, getLocalDateString } from "
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
 
 
-function RequestEquipmentModal({ setModalType, equipmentName }){
+function RequestEquipmentModal({ setModalType, equipmentName, onRequestSubmitted }){
 
     const today = getLocalDateString();
     const currentTime = getCurrentTimeString();
@@ -44,7 +44,7 @@ function RequestEquipmentModal({ setModalType, equipmentName }){
 
         setLoading(true);
 
-        const user = JSON.parse(getCookie('user'));
+        const user = JSON.parse(getCookie('user') || 'null');
 
         const courseLabels = {
             CpE: "BS Computer Engineering",
@@ -88,6 +88,7 @@ function RequestEquipmentModal({ setModalType, equipmentName }){
 
             if (response.ok) {
                 toast.success("Request submitted successfully!");
+                if (onRequestSubmitted) await onRequestSubmitted();
                 setModalType(null);
             } else {
                 toast.error(data.message || 'Request failed.');
