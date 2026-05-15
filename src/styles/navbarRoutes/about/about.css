@@ -31,6 +31,7 @@ header, main, .home-footer{
 }
 
 .header-textbox p{
+    width: 60%;
     margin: 10px 0 40px;
     font-size: 14px;
     color: rgb(255, 255, 255);
@@ -74,7 +75,10 @@ header, main, .home-footer{
     padding: 20px 12px;
     box-sizing: border-box;
     transition: 0.5s;
-    height: auto;
+    max-height: 500px;
+    min-height: 250px;
+
+    width: 100%;
 }
 
 .function-col h3{

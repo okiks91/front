@@ -31,7 +31,8 @@
     box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.1);
     padding: 30px 40px 30px 40px;
     min-height: 580px;
-    max-height: auto;
+    height: 70%;
+    overflow-x: auto;
 }
 
 .equipment-tableHistory-container h1{
@@ -91,7 +92,8 @@
     box-shadow: 10px 10px 10px 10px rgba(0,0,0,0.1);
     padding: 30px 40px 30px 40px;
     min-height: 580px;
-    max-height: auto;
+    height: 70%;
+    overflow-x: auto;
 }
 
 .facility-tableHistory-container h1{

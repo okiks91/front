@@ -1,60 +1,74 @@
-.login-container{
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border: 1px solid transparent;
-    display: flex;
-    height: 500px;
-    width: 500px;
-    margin: auto;
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: white;
 }
 
-.form-login{
-    flex: 1;
+/* ===== CENTER CONTAINER ===== */
+.login-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* ===== LOGIN BOX ===== */
+.form-login {
+    width: 100%;
+    max-width: 500px;
+    padding: 40px 30px;
     background-color: rgb(77, 0, 0);
     color: white;
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
-.form-login .greetings h1{
-    font-weight: 500;
-    letter-spacing: 1px;
-    font-size: 30px;
-    color: white;
-    padding: 0;
-}
-
-.form-login .greetings h2{
-    font-weight: 600;
-    color: gold;
-    font-size: 50px;
-    letter-spacing: 1px;
-}
-.form-login .greetings{
-    padding: 10px;
+/* ===== TEXT ===== */
+.form-login .greetings {
+    text-align: center;
     margin-bottom: 20px;
 }
 
+.form-login .greetings h1 {
+    font-weight: 500;
+    font-size: 26px;
+    margin: 0;
+}
 
-.form-login .credentials {
-    border-radius: 5px;
-    width: 300px;
+.form-login .greetings h2 {
+    font-weight: 700;
+    font-size: 45px;
+    color: gold;
+    margin: 5px 0 0;
+}
+
+/* ===== INPUTS ===== */
+.credentials {
+    width: 100%;
+    max-width: 300px;
     padding: 15px;
-    box-sizing: border-box;
+    margin: 8px 0;
     border: none;
+    border-radius: 5px;
     font-weight: 600;
+    box-sizing: border-box;
+}
+
+.credentials::placeholder {
+    color: rgb(172, 172, 172);
 }
 
 .password-wrapper {
     position: relative;
     display: inline-block;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
 }
 
 .password-wrapper .credentials {
@@ -81,29 +95,29 @@
     color: #333;
 }
 
-.form-login input::placeholder{
-    color: rgb(172, 172, 172);
-}
-
-.login-btn{
-    width: 300px;
+/* ===== BUTTON ===== */
+.login-btn {
+    width: 100%;
+    max-width: 300px;
     padding: 15px;
     border: none;
     background-color: gold;
     color: black;
     border-radius: 5px;
-    font-size: 20px;
+    font-size: 14px;
+    font-weight: bold;
     cursor: pointer;
-    transition: 0.2 ease;
-    font-size: small;
+    transition: 0.2s ease;
+    margin-top: 10px;
 }
 
-.login-btn:hover{
-    width: 300px;
+.login-btn:hover {
     background-color: rgba(221, 191, 23, 0.821);
-    color: rgb(255, 255, 255);
+    color: white;
+    transform: scale(1.02);
 }
 
+/* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
     .form-login {
         max-width: 90%;

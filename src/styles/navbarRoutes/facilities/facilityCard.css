@@ -1,7 +1,9 @@
 .facilityCard{
     box-shadow: 8px 8px 3px 0px rgba(0,0,0,0.1);
-    width: 400px;
-    height: 490px;
+    max-width: 400px;
+    width: 80%;
+    max-height: 490px;
+    height: 80%;
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -18,8 +20,8 @@
 
 
 .facilityCard .card-image{
-    width: 400px;
-    height: 500px;
+    max-width: 400px;
+    max-height: 500px;
     object-fit: cover;
     margin-bottom: 20px;
 }

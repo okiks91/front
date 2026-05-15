@@ -1,4 +1,18 @@
-header, main, .facility-footer{
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main{
+    flex: 1;
+}
+header, .facility-footer{
     margin-left: 220px;
 }
 
@@ -28,9 +42,10 @@ header, main, .facility-footer{
 
 
 .facility-footer{
+    margin-left: 220px;
     margin-top: 20px;
     color: maroon;
-    padding: 20px 30px 20px 30px;
+    padding: 20px 30px;
 }
 
 .facility-footer h1{
