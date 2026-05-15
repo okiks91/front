@@ -24,3 +24,15 @@
 .facilityCardWrapper::-webkit-scrollbar-thumb:hover {
     background: #dcd800;
 }
+
+@media (max-width: 480px) {
+    .facilityCardWrapper::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .facilityCardWrapper::-webkit-scrollbar {
+        display: none;
+    }
+}

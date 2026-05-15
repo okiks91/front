@@ -154,3 +154,60 @@
     color: maroon;
     background-color: rgb(228, 227, 227);
 }
+
+@media (max-width: 480px) {
+    .profile-main-container{
+        margin-left: 0;
+    }
+    .profile-container,
+    .profile-details{
+        width: 100%;
+        height: auto;
+        
+    }
+    .update-btn-systemSchoolAdmin{
+        position: absolute;
+        bottom: 0;
+        margin-top: 20px;
+        display: flex;
+    }
+    .profile-name{
+        margin-bottom: 40px;
+        font-size: 25px;
+    }
+
+
+    .profile-container-systemSchoolAdmin{
+        width: 100%;
+        height: auto;
+    }
+    
+    .profile-name-systemSchoolAdmin{
+        margin-bottom: 40px;
+        font-size: 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-main-container{
+        margin-left: 0;
+    }
+    .profile-container,
+    .profile-details{
+        width: 100%;
+        height: auto;
+    }
+
+    .update-btn-systemSchoolAdmin{
+        position: absolute;
+        bottom: 0;
+        margin-top: 20px;
+        display: flex;
+    }
+    .profile-name{
+        margin-bottom: 40px;
+        font-size: 25px;
+    }
+
+    
+}

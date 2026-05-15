@@ -14,3 +14,19 @@
     border: none;
     font-weight: 600;
 }
+
+@media (max-width: 480px) {
+    .create, .create-content {
+        margin-left: 0px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .create, .create-content {
+        margin-left: 0px;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 915px) {
+    
+}

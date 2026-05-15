@@ -77,3 +77,37 @@
 .nav-links::-webkit-scrollbar {
     display: none; /* Chrome, Safari */
 }
+
+@media (max-width: 480px) {
+    .sidebar{
+        margin-left: -220px;
+        transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.open{
+        margin-left: 0;
+    }
+
+    .menu-icon{
+        display: block;
+        position: relative;
+        left: 230px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar{
+        margin-left: -220px;
+        transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.open{
+        margin-left: 0;
+    }
+
+    .menu-icon{
+        display: block;
+        position: relative;
+        left: 230px;
+    }
+}

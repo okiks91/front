@@ -138,3 +138,78 @@
     background-color: gold;
     color: black;
 }
+
+@media (max-width: 480px) {
+    .tableHistory-select, 
+    .whole-container, 
+    .tableHistory-equipment-main-container, 
+    .tableHistory-facility-main-container{
+        margin-left: 0;
+        height: 70%;
+    }
+
+    .equipment-tableHistory-container, 
+    .facility-tableHistory-container{
+        padding: 20px;
+    }
+
+    .equipment-tableHistory,
+    .facilities-tableHistory{
+        margin-top: 20px;
+    } 
+
+    .facility-tableHistory-container h1, 
+    .equipment-tableHistory-container h1{
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .facilities-tableHistory-header th,
+    .equipment-tableHistory-header th{
+        font-size: 8px;
+    }
+    
+
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .tableHistory-select, 
+    .whole-container, 
+    .tableHistory-equipment-main-container, 
+    .tableHistory-facility-main-container{
+        margin-left: 0;
+        height: 70%;
+    }
+
+    .equipment-tableHistory-container, 
+    .facility-tableHistory-container{
+        padding: 20px;
+    }
+
+    .equipment-tableHistory,
+    .facilities-tableHistory{
+        margin-top: 20px;
+        min-width: 500px;
+    } 
+
+    .facility-tableHistory-container h1, 
+    .equipment-tableHistory-container h1{
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .facilities-tableHistory-header th,
+    .equipment-tableHistory-header th{
+        font-size: 8px;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 915px) {
+
+    .facilities-tableHistory-header th,
+    .equipment-tableHistory-header th{
+        font-size: 8px;
+    }
+
+    
+}

@@ -157,3 +157,104 @@ header, main, .home-footer{
 .icons-footer .icons:hover{
     color: gold;
 }
+
+@media (max-width: 480px) {
+    .home-header{
+        height: 80vh;
+        margin-left: 0;
+    } 
+    
+    
+    .home-content, .home-footer{
+        margin-left: 0;
+    }
+
+    .header-textbox h1{
+        width: 80%;
+        font-size: 50px;
+    }
+
+    .header-textbox p{
+        font-size: 9px;
+        width: 80%;
+    }
+
+    .function{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .home-footer h4{
+        margin-top: 10px;
+    }
+
+    .home-footer p{
+        font-size: 12px;
+    }
+    .icons-footer{
+        margin-top: 15px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .home-header{
+        height: 80vh;
+        margin-left: 0;
+    } 
+    
+    
+    .home-content, .home-footer{
+        margin-left: 0;
+    }
+
+    .header-textbox h1{
+        width: 80%;
+        font-size: 80px;
+    }
+
+    .header-textbox p{
+        font-size: 15px;
+        width: 80%;
+    }
+
+    .function{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .home-footer h4{
+        margin-top: 10px;
+        font-size: 18px;
+    }
+
+    .home-footer p{
+        font-size: 16px;
+    }
+    .icons-footer{
+        margin-top: 8px;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 915px) {
+
+    .header-textbox h1{
+        width: 80%;
+        font-size: 80px;
+    }
+
+    .header-textbox p{
+        font-size: 15px;
+        width: 80%;
+    }
+
+    .home-footer h4{
+        margin-top: 10px;
+    }
+
+    .home-footer p{
+        font-size: 13px;
+    }
+    .icons-footer{
+        margin-top: 6px;
+    }    
+}

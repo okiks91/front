@@ -24,3 +24,15 @@
 .equipmentCardWrapper::-webkit-scrollbar-thumb:hover {
     background: #dcd800;
 }
+
+@media (max-width: 480px) {
+    .equipmentCardWrapper::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .equipmentCardWrapper::-webkit-scrollbar {
+        display: none;
+    }
+}

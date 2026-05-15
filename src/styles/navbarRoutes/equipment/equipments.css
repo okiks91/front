@@ -50,26 +50,84 @@ main, .equipment-footer{
     border-spacing: 10px 10px;      
 }
 
+@media (max-width: 480px) {
+    main, .equipment-footer{
+        margin-left: 0;
+    }
+    
+    .equipment-footer{
+        margin-left: 0;
+        bottom: 0;
+    }
+    .equipment-footer h1{
+        font-size: 20px;
+    }
 
+    .equipment-footer p{
+        font-size: 10px;
+    }
 
+    .available-in-use-btn{
+        padding: 10px 18px;
+        font-size: 8px;
+    }
 
+    .approve-in-use-btn{
 
+        padding: 10px 18px;
+        font-size: 8px;
+    }
+}
 
+@media (min-width: 481px) and (max-width: 768px) {
+    main, .equipment-footer{
+        margin-left: 0;
+    }
+    
+    .equipment-footer{
+        margin-left: 0;
+        bottom: 0;
+    }
+    .equipment-footer h1{
+        font-size: 20px;
+    }
 
+    .equipment-footer p{
+        font-size: 10px;
+    }
 
+    .available-in-use-btn{
+        padding: 10px 18px;
+        font-size: 8px;
+    }
 
+    .approve-in-use-btn{
 
+        padding: 10px 18px;
+        font-size: 8px;
+    }
 
+}
 
+@media (min-width: 800px) and (max-width: 915px) {
+    
+    .equipment-footer h1{
+        font-size: 20px;
+    }
 
+    .equipment-footer p{
+        font-size: 10px;
+    }
 
+    .available-in-use-btn{
+        padding: 10px 18px;
+        font-size: 8px;
+    }
 
+    .approve-in-use-btn{
 
+        padding: 10px 18px;
+        font-size: 8px;
+    }
 
-
-
-
-
-
-
-
+}

@@ -44,3 +44,72 @@
     color: black;
     background-color: gold;
 }
+
+@media (max-width: 480px) {
+    .equipmentCard{
+        width: 300px;
+        height: 400px;
+        margin: 20px 20px 20px 20px;
+    }
+
+    .equipmentCard .card-image{
+        width: 300px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .equipment-content{
+        margin-left: 0;
+    }
+
+
+    .equipmentRequest-table-container{
+        width: 100%;
+        padding: 20px 10px;
+        overflow-x: auto;
+    }
+    
+    .equipment-table th{
+        font-size: 8px;
+        overflow-x: auto;
+    }
+
+    .equipment-table td{
+        font-size: 8px;
+        font-weight: 1000;
+        overflow-x: auto;
+        
+    }
+
+    .in-use-btn{
+        padding: 2px;
+        font-size: 8px;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 915px) {
+
+    .equipmentRequest-table-container{
+        width: 100%;
+        padding: 20px 10px;
+        overflow-x: auto;
+    }
+    
+    .equipment-table th{
+        font-size: 8px;
+        overflow-x: auto;
+    }
+
+    .equipment-table td{
+        font-size: 8px;
+        font-weight: 1000;
+        overflow-x: auto;
+        
+    }
+
+    .in-use-btn{
+        padding: 2px;
+        font-size: 8px;
+    }
+}

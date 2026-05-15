@@ -100,3 +100,62 @@
     background-color: rgba(221, 191, 23, 0.821);
     color: rgb(255, 255, 255);
 }
+
+@media (max-width: 480px) {
+    .registerSchoolAdmins-container{
+        margin-left: 0;
+        left: 50%;
+        width: 90%;
+        height: 80%;
+    }
+
+    .register-schoolAdmin{
+        left: 50%;
+        width: 90%;
+    }
+
+    .register-schoolAdmin .create h1{
+        font-size: 24px;
+    }
+
+    .register-schoolAdmin .create h2{
+        font-size: 30px;
+    }
+
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .registerschoolAdmin-container{
+        margin-left: 0;
+        left: 50%;
+        width: 90%;
+        height: 80%;
+    }
+
+    .register-schoolAdmin{
+        left: 50%;
+        width: 90%;
+    }
+
+    .register-schoolAdmin .create h1{
+        font-size: 24px;
+    }
+
+    .register-schoolAdmin .create h2{
+        font-size: 30px;
+    }
+
+}
+
+@media (min-width: 800px) and (max-width: 915px) {
+
+
+    .register-schoolAdmin .create h1{
+        font-size: 24px;
+    }
+
+    .register-schoolAdmin .create h2{
+        font-size: 30px;
+    }
+
+}

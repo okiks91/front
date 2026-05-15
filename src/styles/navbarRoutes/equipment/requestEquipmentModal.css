@@ -147,3 +147,28 @@ textarea.req-input {
     background-color: rgb(105, 0, 0);
     color: gold;
 }
+
+@media (max-width: 480px) {
+    .request-form h1{
+        font-size: 25px;
+    }
+
+    .occupy-modal-details h1{
+        font-size: 20px;
+    }
+
+    .occupy-modal-details p{
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .occupy-btns{
+        padding: 8px;
+        font-size: 14px;
+        width: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+
+}
