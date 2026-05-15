@@ -7,10 +7,6 @@ export const setCookie = (name, value, days) => {
             expires = "; expires=" + date.toUTCString();
         }
 
-        const val = typeof value === "object"
-            ? JSON.stringify(value)
-            : value;
-            
         document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
     }
 
@@ -51,6 +47,7 @@ export const apiUrl = (path) => {
 export const authFetch = (url, options = {}) => {
     const token = getAuthToken();
     const headers = {
+        'ngrok-skip-browser-warning': 'true',
         ...(options.headers || {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
@@ -63,6 +60,7 @@ export const authFetch = (url, options = {}) => {
 
 export const apiFetch = (url, options = {}) => {
     const headers = {
+        'ngrok-skip-browser-warning': 'true',
         ...(options.headers || {}),
     };
 
