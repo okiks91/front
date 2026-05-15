@@ -1,11 +1,12 @@
 import { Navigate } from "react-router-dom";
-import { getCookie } from './utility.jsx';
+import { getAuthToken, getCookie } from './utility.jsx';
 
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const userCookie = getCookie("user");
+    const authToken = getAuthToken();
 
-    if (userCookie == null) { // !user
+    if (userCookie == null || authToken == null) { // !user
         return <Navigate to="/" replace/>;
     }
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
 
 
 import Navbar from '../../components/navbar.jsx';
@@ -6,11 +7,10 @@ import FacilityCardWrapper from '../../components/navbarRoutes/facilities/facili
 import EndOccupyFacilityModal from '../../components/navbarRoutes/facilities/endOccupyFacilityModal.jsx';
 import OverTimeModal from '../../components/export/OverTimeModal.jsx';
 import { facilitiesArray }  from '../../components/export/constant.jsx';
-import { getCookie } from '../../components/export/utility.jsx';
+import { authFetch, getBookingEndDateTime, getCookie, isBookingPastEnd } from '../../components/export/utility.jsx';
 
 
 import '../../styles/navbarRoutes/facilities/facility.css';
-import { apiUrl } from '../../components/export/api.jsx';
 
 
 function Facilities(){
@@ -40,16 +40,10 @@ function Facilities(){
     const autoEndTimers = useRef({});
     const fetchOccupanciesRef = useRef(null);
 
-    const getCurrentTime = () => {
-        const now = new Date();
-        return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    };
-
     const dismissedRef = useRef(new Set());
 
     const checkOvertime = (data) => {
-        const now = getCurrentTime();
-        const overdue = data.filter(o => isVisible(o) && o.endTime && now > o.endTime);
+        const overdue = data.filter(o => isVisible(o) && isBookingPastEnd(o));
         if (overdue.length > 0) {
             const newOverdue = overdue.filter(o => !dismissedRef.current.has(o.id) && !autoEndTimers.current[o.id + '-end']);
             if (newOverdue.length > 0) {
@@ -57,7 +51,7 @@ function Facilities(){
                 setShowOverTimeModal(true);
                 newOverdue.forEach(o => {
                     autoEndTimers.current[o.id + '-end'] = setTimeout(() => {
-                        fetch(apiUrl(`/facility-occupancy/${o.id}/end`), { method: 'POST' })
+                        authFetch(`/facility-occupancy/${o.id}/end`, { method: 'POST' })
                             .then(() => {
                                 setOverTimeItems([{ name: o.roomName, endTime: o.endTime, id: o.id, ended: true }]);
                                 setShowOverTimeModal(true);
@@ -72,7 +66,7 @@ function Facilities(){
     };
 
     const fetchOccupancies = () => {
-        fetch(apiUrl('/facility-occupancies'))
+        authFetch('/facility-occupancies')
             .then(res => res.json())
             .then(data => {
                 setOccupancies(data);
@@ -81,9 +75,8 @@ function Facilities(){
                 data.filter(o => isVisible(o) && o.endTime).forEach(o => {
                     if (autoEndTimers.current[o.id + '-notify'] || dismissedRef.current.has(o.id)) return;
                     const now = new Date();
-                    const [h, m] = o.endTime.split(':').map(Number);
-                    const endDate = new Date();
-                    endDate.setHours(h, m, 0, 0);
+                    const endDate = getBookingEndDateTime(o);
+                    if (!endDate) return;
                     const msUntilEnd = endDate - now;
                     if (msUntilEnd > 0) {
                         autoEndTimers.current[o.id + '-notify'] = setTimeout(() => {
@@ -95,7 +88,7 @@ function Facilities(){
                             });
                             setShowOverTimeModal(true);
                             autoEndTimers.current[o.id + '-end'] = setTimeout(() => {
-                                fetch(apiUrl(`/facility-occupancy/${o.id}/end`), { method: 'POST' })
+                                authFetch(`/facility-occupancy/${o.id}/end`, { method: 'POST' })
                                     .then(() => {
                                         setOverTimeItems([{ name: o.roomName, endTime: o.endTime, id: o.id, ended: true }]);
                                         setShowOverTimeModal(true);
@@ -115,7 +108,7 @@ function Facilities(){
     fetchOccupanciesRef.current = fetchOccupancies;
 
     const fetchReservations = () => {
-        fetch(apiUrl('/facility-reservations'))
+        authFetch('/facility-reservations')
             .then(res => res.json())
             .then(data => setReservations(data))
             .catch(err => console.error(err));
@@ -123,9 +116,14 @@ function Facilities(){
 
     const handleMarkAvailable = async (id) => {
         try {
-            await fetch(apiUrl(`/facility-reservation/${id}`), { method: 'DELETE' });
+            const response = await authFetch(`/facility-reservation/${id}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error('Failed to mark facility available.');
+            toast.success('Facility marked available.');
             fetchReservations();
-        } catch (err) { console.error(err); }
+        } catch (err) {
+            console.error(err);
+            toast.error(err.message || 'Failed to mark facility available.');
+        }
     };
 
     useEffect(() => {

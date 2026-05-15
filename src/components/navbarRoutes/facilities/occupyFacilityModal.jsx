@@ -1,25 +1,46 @@
 import React, { useState } from "react";
 
 import { toast } from "react-toastify";
-import { getCookie } from "../../export/utility.jsx";
+import { authFetch, getCookie, getCurrentTimeString } from "../../export/utility.jsx";
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
-import { apiUrl } from '../../export/api.jsx';
 
 
 function OccupyFacilityModal({ setOccupyFacilityModal, roomName, floorName, onOccupied }){
 
-    const now = new Date();
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const currentTime = getCurrentTimeString();
 
     const [startTime, setStartTime] = useState(currentTime);
+    const [startTimeEdited, setStartTimeEdited] = useState(false);
     const [endTime, setEndTime] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const refreshDefaultStartTime = () => {
+        if (!startTimeEdited) {
+            setStartTime(getCurrentTimeString());
+        }
+    };
 
     const handleConfirm = async (e) => {
         e.preventDefault();
 
         if (!startTime || !endTime) {
             toast.error('Please fill in both start and end time.');
+            return;
+        }
+
+        const latestCurrentTime = getCurrentTimeString();
+        if (startTime < latestCurrentTime) {
+            toast.error('Start time cannot be earlier than the current time.');
+            return;
+        }
+
+        if (endTime < latestCurrentTime) {
+            toast.error('End time cannot be earlier than the current time.');
+            return;
+        }
+
+        if (endTime <= startTime) {
+            toast.error('End time must be later than the start time.');
             return;
         }
 
@@ -44,7 +65,7 @@ function OccupyFacilityModal({ setOccupyFacilityModal, roomName, floorName, onOc
         const requesterDetails = [course, year, position].filter(Boolean).join(' - ');
 
         try {
-            const response = await fetch(apiUrl('/facility-occupy'), {
+            const response = await authFetch('/facility-occupy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -91,8 +112,13 @@ function OccupyFacilityModal({ setOccupyFacilityModal, roomName, floorName, onOc
                             className="req-input"
                             type="time"
                             value={startTime}
-                            min={currentTime}
-                            onChange={e => setStartTime(e.target.value)}
+                            min={getCurrentTimeString()}
+                            onFocus={refreshDefaultStartTime}
+                            onClick={refreshDefaultStartTime}
+                            onChange={e => {
+                                setStartTimeEdited(true);
+                                setStartTime(e.target.value);
+                            }}
                             required
                         />
                     </div>
@@ -104,7 +130,7 @@ function OccupyFacilityModal({ setOccupyFacilityModal, roomName, floorName, onOc
                             className="req-input"
                             type="time"
                             value={endTime}
-                            min={startTime}
+                            min={startTime < getCurrentTimeString() ? getCurrentTimeString() : startTime}
                             onChange={e => setEndTime(e.target.value)}
                             required
                         />

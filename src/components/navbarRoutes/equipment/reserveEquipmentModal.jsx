@@ -1,32 +1,52 @@
 import React, { useState } from "react";
 
 import { toast } from "react-toastify";
+import { authFetch, getCurrentTimeString, getLocalDateString } from "../../export/utility.jsx";
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
-import { apiUrl } from '../../export/api.jsx';
 
 
 function ReserveEquipmentModal({ setModalType, equipmentName, onStatusChanged }){
 
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const today = getLocalDateString();
+    const currentTime = getCurrentTimeString();
 
     const [date, setDate] = useState(today);
     const [endDate, setEndDate] = useState(today);
     const [startTime, setStartTime] = useState(currentTime);
+    const [startTimeEdited, setStartTimeEdited] = useState(false);
     const [endTime, setEndTime] = useState('');
     const [reason, setReason] = useState('');
     const [status, setStatus] = useState('Reserved');
     const [loading, setLoading] = useState(false);
 
+    const refreshDefaultStartTime = () => {
+        if (date === getLocalDateString() && !startTimeEdited) {
+            setStartTime(getCurrentTimeString());
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (status === 'Reserved') {
+            const latestCurrentTime = getCurrentTimeString();
+            if (date === getLocalDateString() && startTime < latestCurrentTime) {
+                toast.error('Start time cannot be earlier than the current time.');
+                return;
+            }
+
+            if (endDate === date && endTime <= startTime) {
+                toast.error('End time must be later than the start time when using the same date.');
+                return;
+            }
+        }
+
         setLoading(true);
 
         const isUnavailable = status === 'Unavailable';
 
         try {
-            const response = await fetch(apiUrl('/equipment-set-status'), {
+            const response = await authFetch('/equipment-set-status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -82,12 +102,30 @@ function ReserveEquipmentModal({ setModalType, equipmentName, onStatusChanged })
                         <>
                             <div className="form-group">
                                 <label htmlFor="date" className="req-label">Start Date:</label>
-                                <input id="date" className="req-input" type="date" value={date} min={today} onChange={e => setDate(e.target.value)} required/>
+                                <input id="date" className="req-input" type="date" value={date} min={today} onChange={e => {
+                                    const nextDate = e.target.value;
+                                    setDate(nextDate);
+                                    if (nextDate === getLocalDateString() && !startTimeEdited) {
+                                        setStartTime(getCurrentTimeString());
+                                    }
+                                }} required/>
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="time-start" className="req-label">Start Time:</label>
-                                <input id="time-start" className="req-input" type="time" value={startTime} min={currentTime} onChange={e => setStartTime(e.target.value)}/>
+                                <input
+                                    id="time-start"
+                                    className="req-input"
+                                    type="time"
+                                    value={startTime}
+                                    min={date === today ? getCurrentTimeString() : undefined}
+                                    onFocus={refreshDefaultStartTime}
+                                    onClick={refreshDefaultStartTime}
+                                    onChange={e => {
+                                        setStartTimeEdited(true);
+                                        setStartTime(e.target.value);
+                                    }}
+                                />
                             </div>
 
                             <div className="form-group">
@@ -97,7 +135,14 @@ function ReserveEquipmentModal({ setModalType, equipmentName, onStatusChanged })
 
                             <div className="form-group">
                                 <label htmlFor="time-end" className="req-label">End Time:</label>
-                                <input id="time-end" className="req-input" type="time" value={endTime} min={endDate === date ? startTime : undefined} onChange={e => setEndTime(e.target.value)}/>
+                                <input
+                                    id="time-end"
+                                    className="req-input"
+                                    type="time"
+                                    value={endTime}
+                                    min={endDate === date ? startTime : undefined}
+                                    onChange={e => setEndTime(e.target.value)}
+                                />
                             </div>
                         </>
                     )}

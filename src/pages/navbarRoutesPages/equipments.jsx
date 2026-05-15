@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { toast } from 'react-toastify';
 
 
 import Navbar from '../../components/navbar.jsx';
 import EquipmentCardWrapper from '../../components/navbarRoutes/equipment/equipmentCardWrapper.jsx';
 import OverTimeModal from '../../components/export/OverTimeModal.jsx';
-import { getCookie } from '../../components/export/utility.jsx';
+import { authFetch, getCookie, isBookingPastEnd } from '../../components/export/utility.jsx';
 
 
 import '../../styles/navbarRoutes/equipment/equipments.css';
-import { apiUrl } from '../../components/export/api.jsx';
 
 
 function Equipments(){
@@ -37,21 +37,15 @@ function Equipments(){
     const [showOverTimeModal, setShowOverTimeModal] = useState(false);
     const autoEndTimers = useRef({});
 
-    const getCurrentTime = () => {
-        const now = new Date();
-        return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    };
-
     const checkOvertime = (approved) => {
-        const now = getCurrentTime();
-        const overdue = approved.filter(r => isVisible(r) && r.endTime && now > r.endTime);
+        const overdue = approved.filter(r => isVisible(r) && isBookingPastEnd(r));
         if (overdue.length > 0) {
             setOverTimeItems(overdue.map(r => ({ name: r.equipmentName, endTime: r.endTime, id: r.id })));
             setShowOverTimeModal(true);
             overdue.forEach(r => {
                 if (!autoEndTimers.current[r.id]) {
                     autoEndTimers.current[r.id] = setTimeout(() => {
-                        fetch(apiUrl(`/equipment-request/${r.id}/mark-available`), { method: 'POST' })
+                        authFetch(`/equipment-request/${r.id}/mark-available`, { method: 'POST' })
                             .then(() => fetchAll())
                             .catch(console.error);
                         delete autoEndTimers.current[r.id];
@@ -64,9 +58,9 @@ function Equipments(){
     const fetchAll = useCallback(async () => {
         try {
             const [pendingRes, approvedRes, statusesRes] = await Promise.all([
-                fetch(apiUrl('/equipment-requests?status=pending')),
-                fetch(apiUrl('/equipment-requests?status=approved')),
-                fetch(apiUrl('/equipment-statuses')),
+                authFetch('/equipment-requests?status=pending'),
+                authFetch('/equipment-requests?status=approved'),
+                authFetch('/equipment-statuses'),
             ]);
 
             if (pendingRes.ok) setPendingRequests(await pendingRes.json());
@@ -86,36 +80,56 @@ function Equipments(){
     const handleApprove = async (id) => {
         setLoadingAction(id + '-approve');
         try {
-            await fetch(apiUrl(`/equipment-request/${id}/approve`), { method: 'POST' });
+            const response = await authFetch(`/equipment-request/${id}/approve`, { method: 'POST' });
+            if (!response.ok) throw new Error('Failed to approve request.');
+            toast.success('Equipment request approved.');
             await fetchAll();
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error(e);
+            toast.error(e.message || 'Failed to approve request.');
+        }
         setLoadingAction(null);
     };
 
     const handleDecline = async (id) => {
         setLoadingAction(id + '-decline');
         try {
-            await fetch(apiUrl(`/equipment-request/${id}/decline`), { method: 'POST' });
+            const response = await authFetch(`/equipment-request/${id}/decline`, { method: 'POST' });
+            if (!response.ok) throw new Error('Failed to decline request.');
+            toast.success('Equipment request declined.');
             await fetchAll();
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error(e);
+            toast.error(e.message || 'Failed to decline request.');
+        }
         setLoadingAction(null);
     };
 
     const handleMarkAvailable = async (id) => {
         setLoadingAction(id + '-available');
         try {
-            await fetch(apiUrl(`/equipment-request/${id}/mark-available`), { method: 'POST' });
+            const response = await authFetch(`/equipment-request/${id}/mark-available`, { method: 'POST' });
+            if (!response.ok) throw new Error('Failed to mark equipment available.');
+            toast.success('Equipment marked available.');
             await fetchAll();
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error(e);
+            toast.error(e.message || 'Failed to mark equipment available.');
+        }
         setLoadingAction(null);
     };
 
     const handleRemoveStatus = async (id) => {
         setLoadingAction(id + '-remove');
         try {
-            await fetch(apiUrl(`/equipment-status/${id}`), { method: 'DELETE' });
+            const response = await authFetch(`/equipment-status/${id}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error('Failed to remove equipment status.');
+            toast.success('Equipment status removed.');
             await fetchAll();
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error(e);
+            toast.error(e.message || 'Failed to remove equipment status.');
+        }
         setLoadingAction(null);
     };
 

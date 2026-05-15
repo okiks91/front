@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 
 
 import Navbar from '../../../components/navbar.jsx';
+import { authFetch } from '../../../components/export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/tables.css';
-import { apiUrl } from '../../../components/export/api.jsx';
 
 
 function Tables() {
@@ -17,13 +17,13 @@ function Tables() {
     const [facilityReservations, setFacilityReservations] = useState([]);
 
     const fetchAll = () => {
-        fetch(apiUrl('/equipment-requests?status=approved'))
+        authFetch('/equipment-requests?status=approved')
             .then(res => res.json()).then(data => setEquipmentRequests(data)).catch(console.error);
-        fetch(apiUrl('/equipment-statuses'))
+        authFetch('/equipment-statuses')
             .then(res => res.json()).then(data => setEquipmentStatuses(data)).catch(console.error);
-        fetch(apiUrl('/facility-occupancies'))
+        authFetch('/facility-occupancies')
             .then(res => res.json()).then(data => setFacilityOccupancies(data)).catch(console.error);
-        fetch(apiUrl('/facility-reservations'))
+        authFetch('/facility-reservations')
             .then(res => res.json()).then(data => setFacilityReservations(data)).catch(console.error);
     };
 

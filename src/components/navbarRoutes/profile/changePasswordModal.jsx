@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import { toast } from 'react-toastify';
 
 
 import '../../../styles/profile/changePasswordModal.css';
-import { getCookie } from "../../export/utility.jsx";
-import { apiUrl } from '../../export/api.jsx';
+import { authFetch, getCookie } from "../../export/utility.jsx";
 
 
 function ChangePasswordModal({ setModalChangePassword }){
@@ -11,24 +11,24 @@ function ChangePasswordModal({ setModalChangePassword }){
     const [currentPin, setCurrentPin] = useState('');
     const [newPin, setNewPin] = useState('');
     const [confirmPin, setConfirmPin] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
     const [showCurrentPin, setShowCurrentPin] = useState(false);
     const [showNewPin, setShowNewPin] = useState(false);
     const [showConfirmPin, setShowConfirmPin] = useState(false);
 
     const handleUpdate = async () => {
-        setError('');
-        setSuccess('');
-
         if (!currentPin || !newPin || !confirmPin) {
-            setError('Please fill in all fields.');
+            toast.error('Please fill in all fields.');
             return;
         }
 
         if (newPin !== confirmPin) {
-            setError('New passwords do not match.');
+            toast.error('New passwords do not match.');
+            return;
+        }
+
+        if (newPin === currentPin) {
+            toast.error('New password must be different from the current password.');
             return;
         }
 
@@ -36,14 +36,14 @@ function ChangePasswordModal({ setModalChangePassword }){
         const email = user?.email;
 
         if (!email) {
-            setError('Could not identify user. Please log in again.');
+            toast.error('Could not identify user. Please log in again.');
             return;
         }
 
         setLoading(true);
 
         try {
-            const response = await fetch(apiUrl('/change-pin'), {
+            const response = await authFetch('/change-pin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, currentPin, newPin }),
@@ -52,16 +52,16 @@ function ChangePasswordModal({ setModalChangePassword }){
             const data = await response.json();
 
             if (response.ok) {
-                setSuccess('Password updated successfully.');
+                toast.success('Password updated successfully.');
                 setCurrentPin('');
                 setNewPin('');
                 setConfirmPin('');
             } else {
-                setError(data.message || 'Update failed.');
+                toast.error(data.message || 'Update failed.');
             }
         } catch (err) {
             console.error(err);
-            setError('Could not connect to server.');
+            toast.error('Could not connect to server.');
         } finally {
             setLoading(false);
         }
@@ -148,9 +148,6 @@ function ChangePasswordModal({ setModalChangePassword }){
                                 </button>
                             </div>
                         </div>
-
-                        {error && <p style={{ color: 'red', fontSize: '13px' }}>{error}</p>}
-                        {success && <p style={{ color: 'green', fontSize: '13px' }}>{success}</p>}
 
                         <div className="cp-btns-container">
                             <button

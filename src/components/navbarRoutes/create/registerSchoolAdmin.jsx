@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import { authFetch } from '../../export/utility.jsx';
 
 
 import '../../../styles/login-register/registerSchoolAdmin.css';
-import { apiUrl } from '../../export/api.jsx';
 
 
 function RegisterSchoolAdmin(){
@@ -11,19 +12,17 @@ function RegisterSchoolAdmin(){
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
 
     const handleRegister = async () => {
         if (!firstName || !lastName || !email) {
-            setMessage('Please fill in all fields.');
+            toast.error('Please fill in all fields.');
             return;
         }
 
         setLoading(true);
-        setMessage('');
 
         try {
-            const response = await fetch(apiUrl('/register-user'), {
+            const response = await authFetch('/register-user', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -37,16 +36,16 @@ function RegisterSchoolAdmin(){
             const data = await response.json();
 
             if (response.ok) {
-                setMessage(`Success! PIN sent to ${email}.`);
+                toast.success(`Success! PIN sent to ${email}.`);
                 setFirstName('');
                 setLastName('');
                 setEmail('');
             } else {
-                setMessage(data.message || 'Registration failed.');
+                toast.error(data.message || 'Registration failed.');
             }
         } catch (error) {
             console.error(error);
-            setMessage('Could not connect to server.');
+            toast.error('Could not connect to server.');
         } finally {
             setLoading(false);
         }
@@ -68,8 +67,6 @@ function RegisterSchoolAdmin(){
 
                     <input className="schoolAdmin-credentials" type='email' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)}></input><br/><br/>
                 </div>
-
-                {message && <p style={{ color: message.startsWith('Success') ? 'green' : 'red', fontSize: '13px' }}>{message}</p>}
 
                 <div className="registerSchoolAdmins-btns">
                     <button className="register" type='submit' onClick={handleRegister} disabled={loading}>

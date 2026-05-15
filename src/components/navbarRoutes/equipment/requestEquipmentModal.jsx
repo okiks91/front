@@ -1,25 +1,47 @@
 import React, { useState } from "react";
 
 import { toast } from "react-toastify";
-import { getCookie } from "../../export/utility.jsx";
+import { authFetch, getCookie, getCurrentTimeString, getLocalDateString } from "../../export/utility.jsx";
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
-import { apiUrl } from '../../export/api.jsx';
 
 
 function RequestEquipmentModal({ setModalType, equipmentName }){
 
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const today = getLocalDateString();
+    const currentTime = getCurrentTimeString();
 
     const [date, setDate] = useState(today);
     const [startTime, setStartTime] = useState(currentTime);
+    const [startTimeEdited, setStartTimeEdited] = useState(false);
     const [endTime, setEndTime] = useState('');
     const [purpose, setPurpose] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const refreshDefaultStartTime = () => {
+        if (date === getLocalDateString() && !startTimeEdited) {
+            setStartTime(getCurrentTimeString());
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const latestCurrentTime = getCurrentTimeString();
+        if (date === getLocalDateString() && startTime < latestCurrentTime) {
+            toast.error('Start time cannot be earlier than the current time.');
+            return;
+        }
+
+        if (date === getLocalDateString() && endTime < latestCurrentTime) {
+            toast.error('End time cannot be earlier than the current time.');
+            return;
+        }
+
+        if (endTime <= startTime) {
+            toast.error('End time must be later than the start time.');
+            return;
+        }
+
         setLoading(true);
 
         const user = JSON.parse(getCookie('user'));
@@ -47,7 +69,7 @@ function RequestEquipmentModal({ setModalType, equipmentName }){
         const requesterDetails = [course, year, position].filter(Boolean).join(' - ');
 
         try {
-            const response = await fetch(apiUrl('/equipment-request'), {
+            const response = await authFetch('/equipment-request', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -87,17 +109,44 @@ function RequestEquipmentModal({ setModalType, equipmentName }){
 
                     <div className="form-group">
                         <label htmlFor="date" className="req-label">Date:</label>
-                        <input id="date" className="req-input" type="date" value={date} min={today} onChange={e => setDate(e.target.value)} required/>
+                        <input id="date" className="req-input" type="date" value={date} min={today} onChange={e => {
+                            const nextDate = e.target.value;
+                            setDate(nextDate);
+                            if (nextDate === getLocalDateString() && !startTimeEdited) {
+                                setStartTime(getCurrentTimeString());
+                            }
+                        }} required/>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="time-start" className="req-label">Start Time:</label>
-                        <input id="time-start" className="req-input" type="time" value={startTime} min={currentTime} onChange={e => setStartTime(e.target.value)} required/>
+                        <input
+                            id="time-start"
+                            className="req-input"
+                            type="time"
+                            value={startTime}
+                            min={date === today ? getCurrentTimeString() : undefined}
+                            onFocus={refreshDefaultStartTime}
+                            onClick={refreshDefaultStartTime}
+                            onChange={e => {
+                                setStartTimeEdited(true);
+                                setStartTime(e.target.value);
+                            }}
+                            required
+                        />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="time-end" className="req-label">End Time:</label>
-                        <input id="time-end" className="req-input" type="time" value={endTime} min={startTime} onChange={e => setEndTime(e.target.value)} required/>
+                        <input
+                            id="time-end"
+                            className="req-input"
+                            type="time"
+                            value={endTime}
+                            min={date === today && startTime < getCurrentTimeString() ? getCurrentTimeString() : startTime}
+                            onChange={e => setEndTime(e.target.value)}
+                            required
+                        />
                     </div>
 
                     <div className="form-group">

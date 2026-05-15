@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { setCookie } from '../components/export/utility.jsx';
+import { apiFetch, setUserSession } from '../components/export/utility.jsx';
 import '../styles/login-register/login.css';
-import { apiUrl } from '../components/export/api.jsx';
 
 
 function Login(){
@@ -17,7 +16,7 @@ function Login(){
         const loginData = { email, password };
 
         try {
-            const response = await fetch(apiUrl('/login'), {
+            const response = await apiFetch('/login', {
                 method: 'POST',
                 headers: { 'Content-type': 'application/json' },
                 body: JSON.stringify(loginData)
@@ -25,7 +24,7 @@ function Login(){
             const data = await response.json();
 
             if (response.ok) {
-                setCookie('user', JSON.stringify(data.user), 1);
+                setUserSession(data.user, data.token, 1);
                 toast.success('Login successful!');
                 setTimeout(() => navigate('/profile'), 1000);
             } else {

@@ -31,6 +31,7 @@ function Navbar(){
 
     const logoutHandler = () => {
         deleteCookie("user");
+        deleteCookie("authToken");
         window.location.href ="/";
     }
 
