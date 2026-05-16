@@ -12,6 +12,15 @@ import '../../../styles/navbarRoutes/equipment/equipmentCardWrapper.css';
 
 const normalizeEquipmentName = (equipmentName) => String(equipmentName || '').trim().toLowerCase();
 
+const sortEquipmentByNameAndNumber = (equipment) => {
+    return [...equipment].sort((first, second) =>
+        first.equipmentName.localeCompare(second.equipmentName, undefined, {
+            numeric: true,
+            sensitivity: 'base',
+        })
+    );
+};
+
 
 function EquipmentCardWrapper({ equipmentItems = [], deletedEquipmentNames = [], equipmentStatuses = [], onEquipmentAdded, onStatusChanged }){
 
@@ -27,6 +36,7 @@ function EquipmentCardWrapper({ equipmentItems = [], deletedEquipmentNames = [],
     const deletedEquipmentSet = new Set(
         [...deletedEquipmentNames, ...locallyDeletedEquipmentNames].map(normalizeEquipmentName)
     );
+    const defaultEquipmentSet = new Set(equipmentArray.map(item => normalizeEquipmentName(item.equipmentName)));
     const defaultEquipmentImage = equipmentArray[0]?.imageUrl || '';
     const equipmentByName = new Map();
 
@@ -41,7 +51,7 @@ function EquipmentCardWrapper({ equipmentItems = [], deletedEquipmentNames = [],
         });
     });
 
-    const allEquipment = Array.from(equipmentByName.values());
+    const allEquipment = sortEquipmentByNameAndNumber(Array.from(equipmentByName.values()));
 
     const visibleEquipment = role === 'studentOfficer'
         ? allEquipment.filter(item => !unavailableEquipment.has(item.equipmentName))
@@ -65,6 +75,7 @@ function EquipmentCardWrapper({ equipmentItems = [], deletedEquipmentNames = [],
                             onStatusChanged={onStatusChanged}
                             onImageUpdated={onEquipmentAdded}
                             onDeleted={handleEquipmentDeleted}
+                            canDelete={role === 'systemAdmin' && !defaultEquipmentSet.has(normalizeEquipmentName(value.equipmentName))}
                         />
                     ))
                 }

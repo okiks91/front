@@ -19,23 +19,23 @@ function About(){
             <header className='home-header'>
                 <div className='header-textbox'>
                     <h1>Equipment and Facilities Monitoring</h1>
-                    <p>System Short Description</p>
+                    <p>The Equipment and Facility Monitoring System delivers a polished, efficient, and highly organized approach to managing classroom spaces and equipment. With its seamless reservation process, real-time availability tracking, and intuitive interface, the system elevates resource management into a smooth and reliable experience, ensuring every user enjoys convenience, clarity, and complete confidence in every reservation.</p>
                 </div>
             </header>
 
             <main className="home-content">
                 <section className="system-function">
                     <h1>Functions of the System</h1>
-                    <p>short introductory sentence</p>
+                    <p>The system’s core functionality focuses on streamlining the reservation, tracking, and management of equipment and facilities within the Westmead International School.</p>
 
                     <div className="function">
                         <div className="function-col">
                             <h3>Equipment Monitoring</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus illum officia corrupti cupiditate exercitationem veniam quibusdam excepturi, fugit aperiam consequatur corporis ad voluptas accusantium, at iusto tenetur, perferendis rerum sint?</p>
+                            <p>The equipment monitoring component ensures a seamless and highly organized process by allowing users to view availability, reserve items, and track usage with ease. Through its intuitive interface and real-time updates, it delivers a convenient and efficient way to manage resources while maintaining order and accountability.</p>
                         </div>
                         <div className="function-col">
                             <h3>Facilities Monitoring</h3>
-                            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Suscipit architecto alias fugit ab ea provident minus, quod ducimus, hic iusto earum? Exercitationem perspiciatis nostrum a cum porro expedita, natus dicta?</p>
+                            <p>The facilities monitoring feature offers a refined and effortless way to oversee classroom availability and usage. With real-time updates and a streamlined reservation process, it ensures that classrooms are organized, accessible, and efficiently managed, providing a smooth and convenient experience for all users.</p>
                         </div>
                     </div>
                 </section>
