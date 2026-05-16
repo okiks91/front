@@ -141,6 +141,8 @@
     color: black;
 }
 
+
+/* Phones */
 @media (max-width: 480px) {
     .tableHistory-select, 
     .whole-container, 
@@ -174,6 +176,7 @@
 
 }
 
+/* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     .tableHistory-select, 
     .whole-container, 

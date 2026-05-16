@@ -156,6 +156,7 @@
     background-color: rgb(228, 227, 227);
 }
 
+/* Phones */
 @media (max-width: 480px) {
     .profile-main-container{
         margin-left: 0;
@@ -189,6 +190,7 @@
     }
 }
 
+/* Tablets */
 @media (max-width: 768px) {
     .profile-main-container{
         margin-left: 0;

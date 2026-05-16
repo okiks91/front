@@ -150,6 +150,8 @@ textarea.req-input {
     color: gold;
 }
 
+
+/* Phones */
 @media (max-width: 480px) {
     .request-form h1{
         font-size: 25px;
@@ -171,6 +173,7 @@ textarea.req-input {
     }
 }
 
+/* Tablets */
 @media (max-width: 768px) {
 
 }

@@ -81,6 +81,9 @@ main, .equipment-footer{
     color: gold;
 }
 
+
+
+/* Phones */
 @media (max-width: 480px) {
     main, .equipment-footer{
         margin-left: 0;
@@ -110,6 +113,7 @@ main, .equipment-footer{
     }
 }
 
+/* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     main, .equipment-footer{
         margin-left: 0;

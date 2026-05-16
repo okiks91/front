@@ -47,6 +47,7 @@
     background-color: gold;
 }
 
+/* Phones */
 @media (max-width: 480px) {
     .equipmentCard{
         width: 300px;
@@ -60,6 +61,7 @@
     }
 }
 
+/* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     .equipment-content{
         margin-left: 0;

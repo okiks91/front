@@ -83,6 +83,7 @@
     display: none;
 }
 
+/* Phones */
 @media (max-width: 480px) {
     .sidebar{
         margin-left: -220px;
@@ -100,6 +101,7 @@
     }
 }
 
+/* Tablets */
 @media (max-width: 768px) {
     .sidebar{
         margin-left: -220px;

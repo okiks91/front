@@ -162,6 +162,11 @@ header, main, .home-footer{
     color: gold;
 }
 
+
+
+
+
+/* Phones */
 @media (max-width: 480px) {
     .home-header{
         height: 80vh;
@@ -200,6 +205,7 @@ header, main, .home-footer{
     }
 }
 
+/* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     .home-header{
         height: 80vh;

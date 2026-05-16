@@ -95,6 +95,8 @@
     color: rgb(255, 255, 255);
 }
 
+
+/* Mobile */
 @media (max-width: 480px) {
     .registerSchoolAdmins-container{
         margin-left: 0;
@@ -118,6 +120,7 @@
 
 }
 
+/* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     .registerschoolAdmin-container{
         margin-left: 0;

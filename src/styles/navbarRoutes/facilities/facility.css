@@ -59,6 +59,7 @@ header, .facility-footer{
     font-size: 15px;
 }
 
+/* Phones */
 @media (max-width: 480px) {
     .facilities,
     .facility-content{
@@ -111,6 +112,7 @@ header, .facility-footer{
     }
 }
 
+/* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     .facilities,
     .facility-content,

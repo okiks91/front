@@ -15,12 +15,16 @@
     font-weight: 600;
 }
 
+
+
+/* Phones */
 @media (max-width: 480px) {
     .create, .create-content {
         margin-left: 0px;
     }
 }
 
+/* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     .create, .create-content {
         margin-left: 0px;

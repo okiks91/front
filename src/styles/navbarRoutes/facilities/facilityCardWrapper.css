@@ -25,12 +25,15 @@
     background: #dcd800;
 }
 
+
+/* Phones */
 @media (max-width: 480px) {
     .facilityCardWrapper::-webkit-scrollbar {
         display: none;
     }
 }
 
+/* Tablets */
 @media (max-width: 768px) {
     .facilityCardWrapper::-webkit-scrollbar {
         display: none;
