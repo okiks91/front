@@ -171,7 +171,9 @@ function Profile(){
                 </span>
             </div>
 
-            <p className="profile-avatar-help">JPG, PNG, WEBP, GIF up to 5 MB</p>
+            {!avatarPreview && !avatarSrc && (
+                <p className="profile-avatar-help">JPG, PNG, WEBP, GIF up to 5 MB</p>
+            )}
 
             {avatarFile && (
                 <div className="profile-avatar-actions">
