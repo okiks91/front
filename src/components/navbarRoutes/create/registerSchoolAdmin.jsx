@@ -13,9 +13,18 @@ function RegisterSchoolAdmin(){
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleRegister = async () => {
+    const handleRegister = async (e) => {
+        e.preventDefault();
+
         if (!firstName || !lastName || !email) {
             toast.error('Please fill in all fields.');
+            return;
+        }
+
+        const trimmedEmail = email.trim();
+
+        if (!trimmedEmail.includes('@')) {
+            toast.error("Please enter a valid email address with '@'.");
             return;
         }
 
@@ -28,7 +37,7 @@ function RegisterSchoolAdmin(){
                 body: JSON.stringify({
                     firstName,
                     lastName,
-                    email,
+                    email: trimmedEmail,
                     role: 'teacherFaculty',
                 }),
             });
@@ -36,7 +45,7 @@ function RegisterSchoolAdmin(){
             const data = await response.json();
 
             if (response.ok) {
-                toast.success(`Success! PIN sent to ${email}.`);
+                toast.success(`Success! PIN sent to ${trimmedEmail}.`);
                 setFirstName('');
                 setLastName('');
                 setEmail('');
@@ -53,7 +62,7 @@ function RegisterSchoolAdmin(){
 
     return(
         <div className='registerSchoolAdmins-container'>
-            <form className='register-schoolAdmin' onSubmit={(e) => e.preventDefault()}>
+            <form className='register-schoolAdmin' onSubmit={handleRegister} noValidate>
                 <div className="create"> 
                     <h1>Create an</h1>
                     <h2>School Admin Account</h2>
@@ -69,7 +78,7 @@ function RegisterSchoolAdmin(){
                 </div>
 
                 <div className="registerSchoolAdmins-btns">
-                    <button className="register" type='submit' onClick={handleRegister} disabled={loading}>
+                    <button className="register" type='submit' disabled={loading}>
                         {loading ? 'REGISTERING...' : 'REGISTER'}
                     </button>
                 </div>
