@@ -13,6 +13,7 @@ import {
 // Create - Registrations
 import RegisterStudent from "../navbarRoutes/create/registerStudent.jsx";
 import RegisterSchoolAdmin from "../navbarRoutes/create/registerSchoolAdmin.jsx";
+import schoolLogo from "../../assets/images/wisVer.png";
 
 
 export const memberArray = [
@@ -218,7 +219,7 @@ export const equipmentArray = [
 ]
 
 
-export const schoolUrl = 'src/assets/images/wisVer.png'
+export const schoolUrl = schoolLogo
 
 
 export const navigationData = [

@@ -14,13 +14,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import '../styles/navbarRoutes/navbar.css';
 
+const LOGO_STORAGE_KEY = 'schoolLogoUrl';
+
+const getStoredLogoUrl = () => {
+    return localStorage.getItem(LOGO_STORAGE_KEY) || schoolUrl;
+};
+
 
 function Navbar(){
 
     const navigate = useNavigate();
     const [user, setUser] = useState();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [logoUrl, setLogoUrl] = useState(schoolUrl);
+    const [logoUrl, setLogoUrl] = useState(getStoredLogoUrl);
 
     const linkHandler = (event, navigateLink) => {
         event.preventDefault();
@@ -49,16 +55,30 @@ function Navbar(){
             .then(res => res.ok ? res.json() : null)
             .then(data => {
                 const nextLogoUrl = data?.imageUrl || data?.logoUrl || data?.schoolLogoUrl;
-                if (nextLogoUrl) setLogoUrl(nextLogoUrl);
+                if (nextLogoUrl) {
+                    localStorage.setItem(LOGO_STORAGE_KEY, nextLogoUrl);
+                    setLogoUrl(nextLogoUrl);
+                }
             })
             .catch(err => console.error(err));
     }, []);
 
     return(
         <nav className={`sidebar ${isMenuOpen ? 'open' : ''}`}>
-             <FontAwesomeIcon onClick={() => setIsMenuOpen(!isMenuOpen)} className="icons menu-icon" icon={isMenuOpen ? faXmark : faBars} /> 
+            <FontAwesomeIcon onClick={() => setIsMenuOpen(!isMenuOpen)} className="icons menu-icon" icon={isMenuOpen ? faXmark : faBars} /> 
             <div className="logo-container">
-                <a href='https://westmead-is.edu.ph/' target='_blank'><img className="sidebar-logo" src={logoUrl} alt="school logo"></img></a>
+                <a href='https://westmead-is.edu.ph/' target='_blank'>
+                    <img
+                        className="sidebar-logo"
+                        src={logoUrl}
+                        alt="school logo"
+                        onError={() => {
+                            if (logoUrl === schoolUrl) return;
+                            localStorage.removeItem(LOGO_STORAGE_KEY);
+                            setLogoUrl(schoolUrl);
+                        }}
+                    />
+                </a>
             </div>
             
             <div className='nav-links'>
