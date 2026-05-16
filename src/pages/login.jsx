@@ -11,6 +11,8 @@ function Login(){
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+    const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
 
     const loginHandler = async () => {
         const loginData = { email, password };
@@ -33,6 +35,41 @@ function Login(){
         } catch (error) {
             console.error("Error:", error);
             toast.error('Could not connect to server.');
+        }
+    };
+
+    const openForgotPasswordPrompt = () => {
+        if (!email.trim()) {
+            toast.error('Please enter your registered email first.');
+            return;
+        }
+
+        setIsForgotPasswordOpen(true);
+    };
+
+    const handleForgotPassword = async () => {
+        setForgotPasswordLoading(true);
+
+        try {
+            const response = await apiFetch('/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+                body: JSON.stringify({ email: email.trim() })
+            });
+            const data = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                toast.success(data.message || 'A new password has been sent to your registered email.');
+                setPassword('');
+                setIsForgotPasswordOpen(false);
+            } else {
+                toast.error(data.message || 'Could not send a new password. Please check your email.');
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            toast.error('Could not connect to server.');
+        } finally {
+            setForgotPasswordLoading(false);
         }
     };
 
@@ -65,8 +102,42 @@ function Login(){
                     </button>
                 </div><br/><br/>
 
+                <button className="forgot-password-btn" type='button' onClick={openForgotPasswordPrompt}>
+                    Forgot password?
+                </button>
                 <button className="login-btn" type='submit' onClick={loginHandler}>LOGIN</button>
             </form>
+
+            {isForgotPasswordOpen && (
+                <div className="forgot-password-overlay" role="dialog" aria-modal="true" aria-labelledby="forgot-password-title">
+                    <div className="forgot-password-modal">
+                        <h3 id="forgot-password-title">Send new password?</h3>
+                        <p>
+                            A new password will be sent to your registered email:
+                            <span>{email.trim()}</span>
+                        </p>
+
+                        <div className="forgot-password-actions">
+                            <button
+                                type="button"
+                                className="forgot-password-cancel"
+                                onClick={() => setIsForgotPasswordOpen(false)}
+                                disabled={forgotPasswordLoading}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                className="forgot-password-confirm"
+                                onClick={handleForgotPassword}
+                                disabled={forgotPasswordLoading}
+                            >
+                                {forgotPasswordLoading ? 'Sending...' : 'Send Password'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
