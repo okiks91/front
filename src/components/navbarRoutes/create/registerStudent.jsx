@@ -17,6 +17,10 @@ function RegisterStudent(){
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const handleSectionChange = (e) => {
+        setSection(e.target.value.replace(/[^A-Za-z0-9]/g, ''));
+    };
+
     const handleRegister = async (e) => {
         e.preventDefault();
 
@@ -31,6 +35,11 @@ function RegisterStudent(){
 
         if (!trimmedSection) {
             toast.error('Please enter a section.');
+            return;
+        }
+
+        if (!/^[A-Za-z0-9]+$/.test(trimmedSection)) {
+            toast.error('Section can only contain letters and numbers.');
             return;
         }
 
@@ -110,7 +119,7 @@ function RegisterStudent(){
 
                     <div className="oneline">
                         <input className="year-role" type='number' placeholder='Year' min={1} max={4} value={year} onChange={(e) => setYear(e.target.value)}></input><br/><br/>
-                        <input className="year-role" type='text' placeholder='Section' value={section} onChange={(e) => setSection(e.target.value)}></input>
+                        <input className="year-role" type='text' placeholder='Section' value={section} onChange={handleSectionChange} pattern="[A-Za-z0-9]*"></input>
                     </div>
 
                     <select className="student-credentials" value={position} onChange={(e) => setPosition(e.target.value)}>

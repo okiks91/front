@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Navbar from '../../../components/navbar.jsx';
 import ChangePasswordModal from "../../../components/navbarRoutes/profile/changePasswordModal.jsx";
 import ProfilePic from '../../../assets/images/pissinthewind.png';
-import { formatSectionLabel, formatYearLevel, getCookie, getCourseLabel, getPositionLabel } from "../../../components/export/utility.jsx";
+import { formatYearLevel, getCookie, getCourseLabel, getPositionLabel } from "../../../components/export/utility.jsx";
 
 
 import '../../../styles/profile/profile.css';
@@ -17,7 +17,7 @@ function Profile(){
     const fullName = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim();
     const course = getCourseLabel(user?.course) || "N/A";
     const year = formatYearLevel(user?.year) || "N/A";
-    const section = formatSectionLabel(user?.section) || "N/A";
+    const section = String(user?.section ?? '').trim().replace(/^section\s+/i, '') || "N/A";
     const position = getPositionLabel(user?.position) || "N/A";
 
     const [modalChangePassword, setModalChangePassword] = useState(false);
