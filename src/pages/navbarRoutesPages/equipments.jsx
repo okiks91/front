@@ -43,6 +43,7 @@ function Equipments(){
 
     const [pendingRequests, setPendingRequests] = useState([]);
     const [approvedRequests, setApprovedRequests] = useState([]);
+    const [equipmentItems, setEquipmentItems] = useState([]);
     const [equipmentStatuses, setEquipmentStatuses] = useState([]);
     const [fetchError, setFetchError] = useState('');
     const [loadingAction, setLoadingAction] = useState(null);
@@ -68,6 +69,21 @@ function Equipments(){
             });
         }
     }, [isVisible]);
+
+    const fetchEquipmentItems = useCallback(async () => {
+        try {
+            const response = await authFetch('/equipment-items');
+
+            if (!response.ok) {
+                throw new Error('Could not load equipment items.');
+            }
+
+            const itemsData = await readArrayResponse(response, ['equipmentItems', 'items', 'data']);
+            setEquipmentItems(itemsData);
+        } catch (error) {
+            console.error('Equipment items fetch error:', error);
+        }
+    }, []);
 
     const fetchAll = useCallback(async () => {
         try {
@@ -103,6 +119,10 @@ function Equipments(){
         const interval = setInterval(fetchAll, role === 'systemAdmin' ? 5000 : 60000);
         return () => clearInterval(interval);
     }, [role, fetchAll]);
+
+    useEffect(() => {
+        fetchEquipmentItems();
+    }, [fetchEquipmentItems]);
 
     const handleApprove = async (id) => {
         setLoadingAction(id + '-approve');
@@ -175,7 +195,12 @@ function Equipments(){
         
             <main className='equipment-content'>
                 <section className='equipmentRequest-card-wrapper'>
-                    <EquipmentCardWrapper equipmentStatuses={equipmentStatuses} onStatusChanged={fetchAll}/>
+                    <EquipmentCardWrapper
+                        equipmentItems={equipmentItems}
+                        equipmentStatuses={equipmentStatuses}
+                        onEquipmentAdded={fetchEquipmentItems}
+                        onStatusChanged={fetchAll}
+                    />
                 </section>
 
                 {fetchError && (
