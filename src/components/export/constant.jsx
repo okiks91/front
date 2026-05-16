@@ -6,7 +6,8 @@ import {
     faPlus,
     faTable,
     faClockRotateLeft,
-    faCircleInfo
+    faCircleInfo,
+    faUsers
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -233,6 +234,12 @@ export const navigationData = [
         path: '/create',
         iconName: faPlus,
         label: 'CREATE',
+        role: 'systemAdmin'
+    },
+    {
+        path: '/users',
+        iconName: faUsers,
+        label: 'USERS',
         role: 'systemAdmin'
     },
     {

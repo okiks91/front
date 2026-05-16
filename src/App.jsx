@@ -25,6 +25,7 @@ import About from './pages/navbarRoutesPages/constant/about.jsx';
 
 // Routes for System Admin
 import Create from './pages/navbarRoutesPages/create.jsx';
+import Users from './pages/navbarRoutesPages/users.jsx';
 
 
 // Routes for 3 users
@@ -72,6 +73,14 @@ function App() {
                             <Create/>
                         </ProtectedRoute>}>
                 </Route>      
+
+                <Route
+                    path='/users'
+                    element={
+                        <ProtectedRoute allowedRoles={['systemAdmin']}>
+                            <Users/>
+                        </ProtectedRoute>}>
+                </Route>
 
 
                 {/*NavbarRoutes - Equipment & Facilities*/}
