@@ -1,15 +1,16 @@
 .facilityCard{
+    --card-width: clamp(220px, 28vw, 320px);
     box-shadow: 8px 8px 3px 0px rgba(0,0,0,0.1);
-    max-width: 400px;
-    width: 80%;
-    max-height: 500px;
-    height: 80%;
+    flex: 0 0 var(--card-width);
+    width: var(--card-width);
+    height: calc(var(--card-width) + 116px);
     background-color: white;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     box-sizing: border-box;
-    margin: 20px 50px 20px 50px;
+    margin: 20px clamp(12px, 3vw, 50px);
+    overflow: hidden;
 }
 
 .facilityCard:hover{
@@ -19,18 +20,18 @@
 }
 
 
-.facilityCard .card-image{
-    max-width: 400px;
-    max-height: 500px;
-    object-fit: cover;
-    margin-bottom: 20px;
-}
-
 .facilityCard .facility-name{
     color: #2f2f2f;
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 20px;
+    min-height: 62px;
+    margin: 0;
+    padding: 10px 12px;
+    font-size: clamp(16px, 2vw, 20px);
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-wrap: anywhere;
 }
 
 .facilityCard .choice-room{
@@ -40,6 +41,7 @@
     color: white;
     cursor: pointer;
     transition: 0.2s ease;
+    margin-top: auto;
 }
 
 .facilityCard .choice-room:hover{
@@ -50,14 +52,14 @@
 /* Phones */
 @media (max-width: 480px) {
     .facilityCard{
-        width: 300px;
-        height: 400px;
-        margin: 20px 20px 20px 20px;
+        --card-width: min(82vw, 300px);
+        margin: 16px 12px;
     }
+}
 
-    .facilityCard .card-image{
-        width: 300px;
-        height: 400px;
+@media (min-width: 481px) and (max-width: 768px) {
+    .facilityCard{
+        --card-width: clamp(240px, 42vw, 320px);
     }
 }
 

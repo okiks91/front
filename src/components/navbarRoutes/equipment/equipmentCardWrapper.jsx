@@ -46,9 +46,11 @@ function EquipmentCardWrapper({ equipmentItems = [], equipmentStatuses = [], onE
                     visibleEquipment.map((value, index) => (
                         <EquipmentCard
                             key={value.id || `${value.equipmentName}-${index}`}
+                            id={value.id}
                             imageUrl={value.imageUrl}
                             equipmentName={value.equipmentName}
                             onStatusChanged={onStatusChanged}
+                            onImageUpdated={onEquipmentAdded}
                         />
                     ))
                 }

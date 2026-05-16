@@ -20,6 +20,7 @@ import {
 
 import '../../styles/navbarRoutes/facilities/facility.css';
 
+const getFacilityImageKey = (floorId, roomName) => `${floorId}::${roomName}`.toLowerCase();
 
 function Facilities(){
 
@@ -41,6 +42,7 @@ function Facilities(){
     const [selectedOccupancy, setSelectedOccupancy] = useState(null);
     const [occupancies, setOccupancies] = useState([]);
     const [reservations, setReservations] = useState([]);
+    const [facilityImages, setFacilityImages] = useState({});
     const [overTimeItems, setOverTimeItems] = useState([]);
     const [showOverTimeModal, setShowOverTimeModal] = useState(false);
     const autoEndTimers = useRef({});
@@ -120,6 +122,32 @@ function Facilities(){
             .catch(err => console.error(err));
     };
 
+    const fetchFacilityImages = () => {
+        authFetch('/facility-images')
+            .then(res => res.ok ? res.json() : [])
+            .then(data => {
+                const items = Array.isArray(data) ? data : data?.items || data?.facilityImages || [];
+                const nextFacilityImages = {};
+
+                items.forEach(item => {
+                    if (!item?.floorId || !item?.roomName || !item?.imageUrl) return;
+                    nextFacilityImages[getFacilityImageKey(item.floorId, item.roomName)] = item.imageUrl;
+                });
+
+                setFacilityImages(nextFacilityImages);
+            })
+            .catch(err => console.error(err));
+    };
+
+    const handleFacilityImageUpdated = (item) => {
+        if (!item?.floorId || !item?.roomName || !item?.imageUrl) return;
+
+        setFacilityImages(prev => ({
+            ...prev,
+            [getFacilityImageKey(item.floorId, item.roomName)]: item.imageUrl,
+        }));
+    };
+
     const handleMarkAvailable = async (id) => {
         try {
             const response = await authFetch(`/facility-reservation/${id}`, { method: 'DELETE' });
@@ -133,6 +161,8 @@ function Facilities(){
     };
 
     useEffect(() => {
+        fetchFacilityImages();
+
         if (role === 'studentOfficer') {
             fetchOccupancies();
             const interval = setInterval(fetchOccupancies, 60000);
@@ -186,7 +216,12 @@ function Facilities(){
 
             <main className='facility-content'>
                 <section className='facility-card-wrapper'>
-                    <FacilityCardWrapper floorValue={floor} onOccupied={fetchOccupancies}/>
+                    <FacilityCardWrapper
+                        floorValue={floor}
+                        facilityImages={facilityImages}
+                        onOccupied={fetchOccupancies}
+                        onFacilityImageUpdated={handleFacilityImageUpdated}
+                    />
                 </section>
 
                 {role === "studentOfficer"  && (

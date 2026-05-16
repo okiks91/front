@@ -1,12 +1,15 @@
 .memberCard{
+    --member-card-width: clamp(220px, 34vw, 320px);
+    --member-photo-size: clamp(140px, 18vw, 200px);
     border: 1px solid gold;
     border-radius: 5px;
     box-shadow: 5px 2px 5px #ffbbbb98;
     padding: 20px;
-    margin: 20px 10px 20px 10px;
+    margin: 20px clamp(8px, 2vw, 16px);
     text-align: center;
-    height: 400px;
-    width: 600px;
+    flex: 0 0 var(--member-card-width);
+    width: var(--member-card-width);
+    min-height: calc(var(--member-photo-size) + 150px);
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -21,19 +24,24 @@
     transition: all 0.2s ease;
 }
 
-.memberCard .card-image{
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
+.memberCard .editable-card-photo{
+    width: var(--member-photo-size);
     border-radius: 50%;
     margin-bottom: 25px;
 }
 
+.memberCard .editable-card-image-button,
+.memberCard .editable-card-image{
+    border-radius: 50%;
+}
+
 .memberCard .member-name {
     min-height: 24px;
-    margin-bottom: 10px;
-    font-size: 25px;
+    margin: 0 0 10px;
+    font-size: clamp(18px, 2vw, 25px);
     color: black;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
 
 }
 
@@ -41,5 +49,13 @@
     min-height: 24px;
     font-size: 15px;
     color: rgba(0, 0, 0, 0.668);
+    margin: 0;
 }
 
+@media (max-width: 480px) {
+    .memberCard{
+        --member-card-width: min(82vw, 280px);
+        --member-photo-size: 150px;
+        margin: 16px 10px;
+    }
+}

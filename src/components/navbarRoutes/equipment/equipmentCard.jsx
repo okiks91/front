@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 
 
+import EditableCardImage from '../../export/editableCardImage.jsx';
 import RequestEquipmentModal from './requestEquipmentModal.jsx';
 import ReserveEquipmentModal from './reserveEquipmentModal.jsx';
-import { getCookie } from '../../export/utility';
+import { authFetch, getCookie } from '../../export/utility';
 
 
 import '../../../styles/navbarRoutes/equipment/equipmentCard.css';
 
 
 function EquipmentCard({
+    id,
     imageUrl,
     equipmentName,
-    onStatusChanged
+    onStatusChanged,
+    onImageUpdated
 }){
 
     const user = JSON.parse(getCookie("user") || 'null');
@@ -22,10 +25,36 @@ function EquipmentCard({
     const allowedRoles = role === "studentOfficer" || role === "schoolFaculty";
     const isAdmin = role === "systemAdmin";
 
+    const handleImageUpload = async (file) => {
+        const formData = new FormData();
+        if (id) formData.append('id', id);
+        formData.append('equipmentName', equipmentName);
+        formData.append('image', file);
+
+        const response = await authFetch('/equipment-item/image', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to update equipment photo.');
+        }
+
+        await onImageUpdated?.(data);
+        return data.imageUrl;
+    };
+
     return(
         <>
             <div className="equipmentCard">
-                <img className="card-image" src={imageUrl} alt='equipment-image'></img>
+                <EditableCardImage
+                    imageUrl={imageUrl}
+                    alt={`${equipmentName} equipment photo`}
+                    canEdit={isAdmin}
+                    onUpload={handleImageUpload}
+                />
                 <h1 className="equipment-name">{equipmentName}</h1>
 
                 {allowedRoles && ( 
