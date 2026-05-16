@@ -32,10 +32,10 @@ function Tables() {
     const fetchAll = async () => {
         try {
             const [equipmentRequestsRes, equipmentStatusesRes, facilityOccupanciesRes, facilityReservationsRes] = await Promise.all([
-                authFetch('/equipment-requests?status=approved'),
-                authFetch('/equipment-statuses'),
-                authFetch('/facility-occupancies'),
-                authFetch('/facility-reservations'),
+                authFetch('/equipment-requests?status=approved&scope=all'),
+                authFetch('/equipment-statuses?scope=all'),
+                authFetch('/facility-occupancies?scope=all'),
+                authFetch('/facility-reservations?scope=all'),
             ]);
 
             const [equipmentRequestsData, equipmentStatusesData, facilityOccupanciesData, facilityReservationsData] = await Promise.all([
