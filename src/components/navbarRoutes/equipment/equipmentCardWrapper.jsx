@@ -36,7 +36,6 @@ function EquipmentCardWrapper({ equipmentItems = [], deletedEquipmentNames = [],
     const deletedEquipmentSet = new Set(
         [...deletedEquipmentNames, ...locallyDeletedEquipmentNames].map(normalizeEquipmentName)
     );
-    const defaultEquipmentSet = new Set(equipmentArray.map(item => normalizeEquipmentName(item.equipmentName)));
     const defaultEquipmentImage = equipmentArray[0]?.imageUrl || '';
     const equipmentByName = new Map();
 
@@ -75,7 +74,6 @@ function EquipmentCardWrapper({ equipmentItems = [], deletedEquipmentNames = [],
                             onStatusChanged={onStatusChanged}
                             onImageUpdated={onEquipmentAdded}
                             onDeleted={handleEquipmentDeleted}
-                            canDelete={role === 'systemAdmin' && !defaultEquipmentSet.has(normalizeEquipmentName(value.equipmentName))}
                         />
                     ))
                 }

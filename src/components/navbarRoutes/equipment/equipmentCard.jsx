@@ -19,8 +19,7 @@ function EquipmentCard({
     equipmentName,
     onStatusChanged,
     onImageUpdated,
-    onDeleted,
-    canDelete = false
+    onDeleted
 }){
 
     const user = JSON.parse(getCookie("user") || 'null');
@@ -86,7 +85,7 @@ function EquipmentCard({
     return(
         <>
             <div className="equipmentCard">
-                {isAdmin && canDelete && (
+                {isAdmin && (
                     <div className={`equipment-card-actions${showActionMenu ? ' is-open' : ''}`}>
                         <button
                             className="equipment-card-menu-btn"
