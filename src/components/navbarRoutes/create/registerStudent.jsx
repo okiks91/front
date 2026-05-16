@@ -5,6 +5,9 @@ import { authFetch } from '../../export/utility.jsx';
 
 import '../../../styles/login-register/registerStudent.css';
 
+const ALLOWED_SECTION_PREFIXES = ['CPE', 'IE', 'CE', 'ECE', 'ME', 'EE'];
+const SECTION_PREFIX_PATTERN = /^(CPE|IE|CE|ECE|ME|EE)[A-Z0-9]*$/;
+
 
 function RegisterStudent(){
 
@@ -18,7 +21,7 @@ function RegisterStudent(){
     const [loading, setLoading] = useState(false);
 
     const handleSectionChange = (e) => {
-        setSection(e.target.value.replace(/[^A-Za-z0-9]/g, ''));
+        setSection(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase());
     };
 
     const handleRegister = async (e) => {
@@ -40,6 +43,11 @@ function RegisterStudent(){
 
         if (!/^[A-Za-z0-9]+$/.test(trimmedSection)) {
             toast.error('Section can only contain letters and numbers.');
+            return;
+        }
+
+        if (!SECTION_PREFIX_PATTERN.test(trimmedSection)) {
+            toast.error(`Section must start with ${ALLOWED_SECTION_PREFIXES.join(', ')}.`);
             return;
         }
 
@@ -119,7 +127,7 @@ function RegisterStudent(){
 
                     <div className="oneline">
                         <input className="year-role" type='number' placeholder='Year' min={1} max={4} value={year} onChange={(e) => setYear(e.target.value)}></input><br/><br/>
-                        <input className="year-role" type='text' placeholder='Section' value={section} onChange={handleSectionChange} pattern="[A-Za-z0-9]*"></input>
+                        <input className="year-role" type='text' placeholder='Section' value={section} onChange={handleSectionChange} pattern="(CPE|IE|CE|ECE|ME|EE)[A-Z0-9]*"></input>
                     </div>
 
                     <select className="student-credentials" value={position} onChange={(e) => setPosition(e.target.value)}>
