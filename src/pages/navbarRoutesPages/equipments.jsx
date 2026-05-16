@@ -147,6 +147,8 @@ function Equipments(){
 
     useEffect(() => {
         fetchEquipmentItems();
+        const interval = setInterval(fetchEquipmentItems, 5000);
+        return () => clearInterval(interval);
     }, [fetchEquipmentItems]);
 
     const handleApprove = async (id) => {
