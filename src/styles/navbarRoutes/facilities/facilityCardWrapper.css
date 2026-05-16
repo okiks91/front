@@ -25,7 +25,6 @@
     background: #dcd800;
 }
 
-
 /* Phones */
 @media (max-width: 480px) {
     .facilityCardWrapper::-webkit-scrollbar {
@@ -34,7 +33,7 @@
 }
 
 /* Tablets */
-@media (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 768px) {
     .facilityCardWrapper::-webkit-scrollbar {
         display: none;
     }
