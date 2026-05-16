@@ -1,5 +1,6 @@
 .equipmentCard{
     --card-width: clamp(220px, 28vw, 320px);
+    position: relative;
     box-shadow: 8px 8px 3px 0px rgba(0,0,0,0.1);
     flex: 0 0 var(--card-width);
     width: var(--card-width);
@@ -11,6 +12,79 @@
     box-sizing: border-box;
     margin: 20px clamp(12px, 3vw, 50px);
     overflow: hidden;
+}
+
+.equipment-card-actions{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.equipmentCard:hover .equipment-card-actions,
+.equipment-card-actions.is-open,
+.equipment-card-actions:focus-within{
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.equipment-card-menu-btn{
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(128, 0, 0, 0.94);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.equipment-card-menu-btn:hover,
+.equipment-card-menu-btn:focus-visible{
+    background: rgb(105, 0, 0);
+    color: gold;
+}
+
+.equipment-card-action-menu{
+    position: absolute;
+    top: 40px;
+    right: 0;
+    min-width: 120px;
+    padding: 6px;
+    border-radius: 6px;
+    background: white;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
+.equipment-card-delete-btn{
+    width: 100%;
+    min-height: 34px;
+    border: none;
+    border-radius: 4px;
+    background: maroon;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.equipment-card-delete-btn:hover{
+    background: rgb(105, 0, 0);
+    color: gold;
+}
+
+.equipment-card-delete-btn:disabled{
+    cursor: wait;
+    opacity: 0.75;
 }
 
 .equipmentCard:hover{

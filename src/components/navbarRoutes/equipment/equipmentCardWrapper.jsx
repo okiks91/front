@@ -10,15 +10,22 @@ import { getCookie } from '../../export/utility.jsx';
 import '../../../styles/navbarRoutes/equipment/equipmentCardWrapper.css';
 
 
-function EquipmentCardWrapper({ equipmentItems = [], equipmentStatuses = [], onEquipmentAdded, onStatusChanged }){
+const normalizeEquipmentName = (equipmentName) => String(equipmentName || '').trim().toLowerCase();
+
+
+function EquipmentCardWrapper({ equipmentItems = [], deletedEquipmentNames = [], equipmentStatuses = [], onEquipmentAdded, onStatusChanged }){
 
     const user = JSON.parse(getCookie("user") || 'null');
     const role = user?.role;
     const [showAddEquipmentModal, setShowAddEquipmentModal] = useState(false);
+    const [locallyDeletedEquipmentNames, setLocallyDeletedEquipmentNames] = useState([]);
     const unavailableEquipment = new Set(
         equipmentStatuses
             .filter(status => status.status === 'Unavailable')
             .map(status => status.equipmentName)
+    );
+    const deletedEquipmentSet = new Set(
+        [...deletedEquipmentNames, ...locallyDeletedEquipmentNames].map(normalizeEquipmentName)
     );
     const defaultEquipmentImage = equipmentArray[0]?.imageUrl || '';
     const equipmentByName = new Map();
@@ -26,6 +33,7 @@ function EquipmentCardWrapper({ equipmentItems = [], equipmentStatuses = [], onE
     [...equipmentArray, ...equipmentItems].forEach(item => {
         const equipmentName = item?.equipmentName?.trim();
         if (!equipmentName) return;
+        if (deletedEquipmentSet.has(normalizeEquipmentName(equipmentName))) return;
         equipmentByName.set(equipmentName.toLowerCase(), {
             ...item,
             equipmentName,
@@ -39,6 +47,11 @@ function EquipmentCardWrapper({ equipmentItems = [], equipmentStatuses = [], onE
         ? allEquipment.filter(item => !unavailableEquipment.has(item.equipmentName))
         : allEquipment;
 
+    const handleEquipmentDeleted = async ({ equipmentName }) => {
+        setLocallyDeletedEquipmentNames(prev => [...prev, equipmentName]);
+        await onEquipmentAdded?.();
+    };
+
     return(
         <>
             <div className="equipmentCardWrapper">
@@ -51,6 +64,7 @@ function EquipmentCardWrapper({ equipmentItems = [], equipmentStatuses = [], onE
                             equipmentName={value.equipmentName}
                             onStatusChanged={onStatusChanged}
                             onImageUpdated={onEquipmentAdded}
+                            onDeleted={handleEquipmentDeleted}
                         />
                     ))
                 }

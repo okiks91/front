@@ -30,6 +30,21 @@ const readArrayResponse = async (response, keys = []) => {
     return [];
 };
 
+const readEquipmentItemsResponse = async (response) => {
+    const data = await response.json();
+    if (Array.isArray(data)) {
+        return { items: data, deletedEquipmentNames: [] };
+    }
+
+    const items = ['equipmentItems', 'items', 'data'].find(key => Array.isArray(data?.[key]));
+    const deletedEquipmentNames = data?.deletedEquipmentNames || data?.hiddenEquipmentNames || data?.deletedNames || [];
+
+    return {
+        items: items ? data[items] : [],
+        deletedEquipmentNames: Array.isArray(deletedEquipmentNames) ? deletedEquipmentNames : [],
+    };
+};
+
 
 function Equipments(){
 
@@ -52,6 +67,7 @@ function Equipments(){
     const [pendingRequests, setPendingRequests] = useState([]);
     const [approvedRequests, setApprovedRequests] = useState([]);
     const [equipmentItems, setEquipmentItems] = useState([]);
+    const [deletedEquipmentNames, setDeletedEquipmentNames] = useState([]);
     const [equipmentStatuses, setEquipmentStatuses] = useState([]);
     const [fetchError, setFetchError] = useState('');
     const [loadingAction, setLoadingAction] = useState(null);
@@ -86,8 +102,9 @@ function Equipments(){
                 throw new Error('Could not load equipment items.');
             }
 
-            const itemsData = await readArrayResponse(response, ['equipmentItems', 'items', 'data']);
-            setEquipmentItems(itemsData);
+            const itemsData = await readEquipmentItemsResponse(response);
+            setEquipmentItems(itemsData.items);
+            setDeletedEquipmentNames(itemsData.deletedEquipmentNames);
         } catch (error) {
             console.error('Equipment items fetch error:', error);
         }
@@ -216,6 +233,7 @@ function Equipments(){
                 <section className='equipmentRequest-card-wrapper'>
                     <EquipmentCardWrapper
                         equipmentItems={equipmentItems}
+                        deletedEquipmentNames={deletedEquipmentNames}
                         equipmentStatuses={equipmentStatuses}
                         onEquipmentAdded={fetchEquipmentItems}
                         onStatusChanged={fetchAll}
