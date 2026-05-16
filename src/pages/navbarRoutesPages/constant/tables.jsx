@@ -7,6 +7,19 @@ import { authFetch, formatSectionLabel, getRequesterDetails, getRequesterSection
 
 import '../../../styles/navbarRoutes/tables.css';
 
+const readArrayResponse = async (response, keys = []) => {
+    if (!response.ok) throw new Error('Could not load table data.');
+
+    const data = await response.json();
+    if (Array.isArray(data)) return data;
+
+    for (const key of keys) {
+        if (Array.isArray(data?.[key])) return data[key];
+    }
+
+    return [];
+};
+
 
 function Tables() {
 
@@ -16,15 +29,29 @@ function Tables() {
     const [facilityOccupancies, setFacilityOccupancies] = useState([]);
     const [facilityReservations, setFacilityReservations] = useState([]);
 
-    const fetchAll = () => {
-        authFetch('/equipment-requests?status=approved')
-            .then(res => res.json()).then(data => setEquipmentRequests(data)).catch(console.error);
-        authFetch('/equipment-statuses')
-            .then(res => res.json()).then(data => setEquipmentStatuses(data)).catch(console.error);
-        authFetch('/facility-occupancies')
-            .then(res => res.json()).then(data => setFacilityOccupancies(data)).catch(console.error);
-        authFetch('/facility-reservations')
-            .then(res => res.json()).then(data => setFacilityReservations(data)).catch(console.error);
+    const fetchAll = async () => {
+        try {
+            const [equipmentRequestsRes, equipmentStatusesRes, facilityOccupanciesRes, facilityReservationsRes] = await Promise.all([
+                authFetch('/equipment-requests?status=approved'),
+                authFetch('/equipment-statuses'),
+                authFetch('/facility-occupancies'),
+                authFetch('/facility-reservations'),
+            ]);
+
+            const [equipmentRequestsData, equipmentStatusesData, facilityOccupanciesData, facilityReservationsData] = await Promise.all([
+                readArrayResponse(equipmentRequestsRes, ['requests', 'equipmentRequests', 'approvedRequests', 'data']),
+                readArrayResponse(equipmentStatusesRes, ['statuses', 'equipmentStatuses', 'data']),
+                readArrayResponse(facilityOccupanciesRes, ['occupancies', 'facilityOccupancies', 'data']),
+                readArrayResponse(facilityReservationsRes, ['reservations', 'facilityReservations', 'data']),
+            ]);
+
+            setEquipmentRequests(equipmentRequestsData);
+            setEquipmentStatuses(equipmentStatusesData);
+            setFacilityOccupancies(facilityOccupanciesData);
+            setFacilityReservations(facilityReservationsData);
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     useEffect(() => {
@@ -43,6 +70,7 @@ function Tables() {
     const equipmentRows = [
         ...equipmentRequests.map(r => ({
             id: r.id,
+            type: 'equipment-request',
             equipment: r.equipmentName,
             name: r.requesterName,
             details: getRequesterDetails(r),
@@ -54,6 +82,7 @@ function Tables() {
         })),
         ...equipmentStatuses.map(s => ({
             id: s.id,
+            type: 'equipment-status',
             equipment: s.equipmentName,
             name: 'System Admin',
             details: s.reason,
@@ -68,6 +97,7 @@ function Tables() {
     const facilityRows = [
         ...facilityOccupancies.map(o => ({
             id: o.id,
+            type: 'facility-occupancy',
             floorName: o.floorName,
             roomName: o.roomName,
             name: o.requesterName,
@@ -81,6 +111,7 @@ function Tables() {
         })),
         ...facilityReservations.map(r => ({
             id: r.id,
+            type: 'facility-reservation',
             floorName: r.floorName,
             roomName: r.roomName,
             name: 'System Admin',
@@ -131,7 +162,7 @@ function Tables() {
                                 </thead>  
                                 <tbody className='equipment-table-body'>
                                     {equipmentRows.map((row, index) => (
-                                        <tr key={row.id}>
+                                        <tr key={`${row.type}-${row.id}`}>
                                             <td>{index + 1}</td>
                                             <td>{row.equipment}</td>
                                             <td>{row.name}</td>
@@ -172,7 +203,7 @@ function Tables() {
                                 </thead>  
                                 <tbody className='facilities-table-body'>
                                     {facilityRows.map((row, index) => (
-                                        <tr key={row.id}>
+                                        <tr key={`${row.type}-${row.id}`}>
                                             <td>{index + 1}</td>
                                             <td>{row.floorName}</td>
                                             <td>{row.roomName}</td>
