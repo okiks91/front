@@ -20,6 +20,34 @@ const readArrayResponse = async (response, keys = []) => {
     return [];
 };
 
+const formatTime = (time) => {
+    if (!time || time === 'n/a') return '-';
+
+    const [hours, minutes = '00'] = String(time).split(':');
+    const hour = Number(hours);
+
+    if (Number.isNaN(hour)) return time;
+
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${period}`;
+};
+
+const formatTimeRange = (startTime, endTime) => {
+    if (!startTime && !endTime) return '-';
+    return `${formatTime(startTime)} - ${formatTime(endTime)}`;
+};
+
+const formatDateRange = (startDate, endDate) => {
+    if (!startDate && !endDate) return '-';
+
+    const displayStartDate = startDate || endDate;
+    const displayEndDate = endDate || startDate;
+
+    if (displayStartDate === displayEndDate) return displayStartDate;
+    return `${displayStartDate} - ${displayEndDate}`;
+};
+
 
 function Tables() {
 
@@ -76,6 +104,7 @@ function Tables() {
             details: getRequesterDetails(r),
             section: getRequesterSection(r),
             date: r.date,
+            endDate: r.endDate || r.date,
             startTime: r.startTime,
             endTime: r.endTime,
             status: 'In Use',
@@ -88,6 +117,7 @@ function Tables() {
             details: s.reason,
             section: formatSectionLabel(s.requesterSection) || '-',
             date: s.date,
+            endDate: s.endDate || s.date,
             startTime: s.startTime || 'n/a',
             endTime: s.endTime || 'n/a',
             status: s.status,
@@ -155,8 +185,7 @@ function Tables() {
                                         <th>DETAILS</th>
                                         <th>SECTION</th>
                                         <th>DATE</th>
-                                        <th>START-TIME</th>
-                                        <th>END-TIME</th>
+                                        <th>TIME</th>
                                         <th>STATUS</th>
                                     </tr>
                                 </thead>  
@@ -168,9 +197,8 @@ function Tables() {
                                             <td>{row.name}</td>
                                             <td>{row.details}</td>
                                             <td>{row.section}</td>
-                                            <td>{row.date}</td>
-                                            <td>{row.startTime}</td>
-                                            <td>{row.endTime}</td>
+                                            <td>{formatDateRange(row.date, row.endDate)}</td>
+                                            <td>{formatTimeRange(row.startTime, row.endTime)}</td>
                                             <td>{row.status}</td>
                                         </tr>
                                     ))}
@@ -194,10 +222,8 @@ function Tables() {
                                         <th>NAME</th>
                                         <th>DETAILS</th>
                                         <th>SECTION</th>
-                                        <th>START-DATE</th>
-                                        <th>END-DATE</th>
-                                        <th>START-TIME</th>
-                                        <th>END-TIME</th>
+                                        <th>DATE</th>
+                                        <th>TIME</th>
                                         <th>STATUS</th>
                                     </tr>
                                 </thead>  
@@ -210,10 +236,8 @@ function Tables() {
                                             <td>{row.name}</td>
                                             <td>{row.details}</td>
                                             <td>{row.section}</td>
-                                            <td>{row.date}</td>
-                                            <td>{row.endDate}</td>
-                                            <td>{row.startTime}</td>
-                                            <td>{row.endTime}</td>
+                                            <td>{formatDateRange(row.date, row.endDate)}</td>
+                                            <td>{formatTimeRange(row.startTime, row.endTime)}</td>
                                             <td>{row.status}</td>
                                         </tr>
                                     ))}
