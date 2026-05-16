@@ -18,44 +18,6 @@
     width: 220px;
 }
 
-.logo-container.is-dragging{
-    outline: 3px solid gold;
-    outline-offset: -3px;
-}
-
-.sidebar-logo-input{
-    display: none;
-}
-
-.sidebar-logo-upload-btn{
-    position: absolute;
-    left: 50%;
-    bottom: 16px;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-width: 112px;
-    min-height: 32px;
-    border: none;
-    border-radius: 6px;
-    background: rgba(128, 0, 0, 0.92);
-    color: white;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.sidebar-logo-upload-btn:hover{
-    background: rgb(105, 0, 0);
-    color: gold;
-}
-
-.sidebar-logo-upload-btn:disabled{
-    cursor: wait;
-    opacity: 0.8;
-}
-
 
 .sidebar ul li a{
     display: flex;
