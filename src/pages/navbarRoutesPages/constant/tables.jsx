@@ -48,6 +48,12 @@ const formatDateRange = (startDate, endDate) => {
     return `${displayStartDate} - ${displayEndDate}`;
 };
 
+const formatSectionValue = (record) => {
+    const section = getRequesterSection(record);
+    if (!section || section === '-') return '-';
+    return section.replace(/^section\s+/i, '');
+};
+
 
 function Tables() {
 
@@ -102,7 +108,7 @@ function Tables() {
             equipment: r.equipmentName,
             name: r.requesterName,
             details: getRequesterDetails(r),
-            section: getRequesterSection(r),
+            section: formatSectionValue(r),
             date: r.date,
             endDate: r.endDate || r.date,
             startTime: r.startTime,
@@ -115,7 +121,7 @@ function Tables() {
             equipment: s.equipmentName,
             name: 'System Admin',
             details: s.reason,
-            section: formatSectionLabel(s.requesterSection) || '-',
+            section: String(s.requesterSection ?? '').trim().replace(/^section\s+/i, '') || '-',
             date: s.date,
             endDate: s.endDate || s.date,
             startTime: s.startTime || 'n/a',
@@ -132,7 +138,7 @@ function Tables() {
             roomName: o.roomName,
             name: o.requesterName,
             details: getRequesterDetails(o),
-            section: getRequesterSection(o),
+            section: formatSectionValue(o),
             date: o.date,
             endDate: o.endDate || o.date,
             startTime: o.startTime,
@@ -146,7 +152,7 @@ function Tables() {
             roomName: r.roomName,
             name: 'System Admin',
             details: r.reason,
-            section: formatSectionLabel(r.requesterSection) || '-',
+            section: String(r.requesterSection ?? '').trim().replace(/^section\s+/i, '') || '-',
             date: r.date,
             endDate: r.endDate || r.date,
             startTime: r.startTime,
