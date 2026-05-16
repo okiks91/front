@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 
 import Navbar from '../../../components/navbar.jsx';
-import { authFetch } from '../../../components/export/utility.jsx';
+import { authFetch, formatSectionLabel, getRequesterDetails, getRequesterSection } from '../../../components/export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/tables.css';
@@ -45,7 +45,8 @@ function Tables() {
             id: r.id,
             equipment: r.equipmentName,
             name: r.requesterName,
-            details: r.requesterDetails,
+            details: getRequesterDetails(r),
+            section: getRequesterSection(r),
             date: r.date,
             startTime: r.startTime,
             endTime: r.endTime,
@@ -56,6 +57,7 @@ function Tables() {
             equipment: s.equipmentName,
             name: 'System Admin',
             details: s.reason,
+            section: formatSectionLabel(s.requesterSection) || '-',
             date: s.date,
             startTime: s.startTime || 'n/a',
             endTime: s.endTime || 'n/a',
@@ -69,7 +71,8 @@ function Tables() {
             floorName: o.floorName,
             roomName: o.roomName,
             name: o.requesterName,
-            details: o.requesterDetails,
+            details: getRequesterDetails(o),
+            section: getRequesterSection(o),
             date: o.date,
             endDate: o.endDate || o.date,
             startTime: o.startTime,
@@ -82,6 +85,7 @@ function Tables() {
             roomName: r.roomName,
             name: 'System Admin',
             details: r.reason,
+            section: formatSectionLabel(r.requesterSection) || '-',
             date: r.date,
             endDate: r.endDate || r.date,
             startTime: r.startTime,
@@ -118,6 +122,7 @@ function Tables() {
                                         <th>EQUIPMENT</th>
                                         <th>NAME</th>
                                         <th>DETAILS</th>
+                                        <th>SECTION</th>
                                         <th>DATE</th>
                                         <th>START-TIME</th>
                                         <th>END-TIME</th>
@@ -131,6 +136,7 @@ function Tables() {
                                             <td>{row.equipment}</td>
                                             <td>{row.name}</td>
                                             <td>{row.details}</td>
+                                            <td>{row.section}</td>
                                             <td>{row.date}</td>
                                             <td>{row.startTime}</td>
                                             <td>{row.endTime}</td>
@@ -156,6 +162,7 @@ function Tables() {
                                         <th>FACILITY NAME</th>
                                         <th>NAME</th>
                                         <th>DETAILS</th>
+                                        <th>SECTION</th>
                                         <th>START-DATE</th>
                                         <th>END-DATE</th>
                                         <th>START-TIME</th>
@@ -171,6 +178,7 @@ function Tables() {
                                             <td>{row.roomName}</td>
                                             <td>{row.name}</td>
                                             <td>{row.details}</td>
+                                            <td>{row.section}</td>
                                             <td>{row.date}</td>
                                             <td>{row.endDate}</td>
                                             <td>{row.startTime}</td>

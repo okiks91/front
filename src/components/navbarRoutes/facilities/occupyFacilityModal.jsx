@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { toast } from "react-toastify";
-import { authFetch, getCookie, getCurrentTimeString } from "../../export/utility.jsx";
+import { authFetch, buildRequesterDetails, getCookie, getCurrentTimeString } from "../../export/utility.jsx";
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
 
 
@@ -48,21 +48,8 @@ function OccupyFacilityModal({ setOccupyFacilityModal, roomName, floorName, onOc
 
         const user = JSON.parse(getCookie('user'));
 
-        const courseLabels = {
-            CpE: "BS Computer Engineering", ME: "BS Mechanical Engineering",
-            CE: "BS Civil Engineering", IE: "BS Industrial Engineering",
-            EE: "BS Electrical Engineering", ECE: "BS Electronics Engineering",
-        };
-        const positionLabels = {
-            president: "President", vicePresident: "Vice President",
-            secretary: "Secretary", treasurer: "Treasurer",
-        };
-
         const requesterName = `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim();
-        const course = courseLabels[user?.course] ?? user?.course ?? '';
-        const year = user?.year ? `${user.year}${['st','nd','rd'][user.year - 1] || 'th'} Year` : '';
-        const position = positionLabels[user?.position] ?? user?.position ?? '';
-        const requesterDetails = [course, year, position].filter(Boolean).join(' - ');
+        const requesterDetails = buildRequesterDetails(user);
 
         try {
             const response = await authFetch('/facility-occupy', {
@@ -74,6 +61,10 @@ function OccupyFacilityModal({ setOccupyFacilityModal, roomName, floorName, onOc
                     requesterEmail: user?.email,
                     requesterName,
                     requesterDetails,
+                    requesterCourse: user?.course,
+                    requesterYear: user?.year,
+                    requesterSection: user?.section,
+                    requesterPosition: user?.position,
                     startTime,
                     endTime,
                 }),

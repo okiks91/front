@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { toast } from "react-toastify";
-import { authFetch, getCookie, getCurrentTimeString, getLocalDateString } from "../../export/utility.jsx";
+import { authFetch, buildRequesterDetails, getCookie, getCurrentTimeString, getLocalDateString } from "../../export/utility.jsx";
 import '../../../styles/navbarRoutes/equipment/requestEquipmentModal.css';
 
 
@@ -11,6 +11,7 @@ function RequestEquipmentModal({ setModalType, equipmentName, onRequestSubmitted
     const currentTime = getCurrentTimeString();
 
     const [date, setDate] = useState(today);
+    const [endDate, setEndDate] = useState(today);
     const [startTime, setStartTime] = useState(currentTime);
     const [startTimeEdited, setStartTimeEdited] = useState(false);
     const [endTime, setEndTime] = useState('');
@@ -32,13 +33,13 @@ function RequestEquipmentModal({ setModalType, equipmentName, onRequestSubmitted
             return;
         }
 
-        if (date === getLocalDateString() && endTime < latestCurrentTime) {
+        if (endDate === getLocalDateString() && endTime < latestCurrentTime) {
             toast.error('End time cannot be earlier than the current time.');
             return;
         }
 
-        if (endTime <= startTime) {
-            toast.error('End time must be later than the start time.');
+        if (endDate === date && endTime <= startTime) {
+            toast.error('End time must be later than the start time when using the same date.');
             return;
         }
 
@@ -46,27 +47,8 @@ function RequestEquipmentModal({ setModalType, equipmentName, onRequestSubmitted
 
         const user = JSON.parse(getCookie('user') || 'null');
 
-        const courseLabels = {
-            CpE: "BS Computer Engineering",
-            ME: "BS Mechanical Engineering",
-            CE: "BS Civil Engineering",
-            IE: "BS Industrial Engineering",
-            EE: "BS Electrical Engineering",
-            ECE: "BS Electronics Engineering",
-        };
-
-        const positionLabels = {
-            president: "President",
-            vicePresident: "Vice President",
-            secretary: "Secretary",
-            treasurer: "Treasurer",
-        };
-
         const requesterName = `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim();
-        const course = courseLabels[user?.course] ?? user?.course ?? '';
-        const year = user?.year ? `${user.year}${['st','nd','rd'][user.year - 1] || 'th'} Year` : '';
-        const position = positionLabels[user?.position] ?? user?.position ?? '';
-        const requesterDetails = [course, year, position].filter(Boolean).join(' - ');
+        const requesterDetails = buildRequesterDetails(user);
 
         try {
             const response = await authFetch('/equipment-request', {
@@ -77,7 +59,12 @@ function RequestEquipmentModal({ setModalType, equipmentName, onRequestSubmitted
                     requesterEmail: user?.email,
                     requesterName,
                     requesterDetails,
+                    requesterCourse: user?.course,
+                    requesterYear: user?.year,
+                    requesterSection: user?.section,
+                    requesterPosition: user?.position,
                     date,
+                    endDate,
                     startTime,
                     endTime,
                     purpose,
@@ -109,10 +96,13 @@ function RequestEquipmentModal({ setModalType, equipmentName, onRequestSubmitted
                     <h2 className="modal-item-name">{equipmentName}</h2>
 
                     <div className="form-group">
-                        <label htmlFor="date" className="req-label">Date:</label>
+                        <label htmlFor="date" className="req-label">Start Date:</label>
                         <input id="date" className="req-input" type="date" value={date} min={today} onChange={e => {
                             const nextDate = e.target.value;
                             setDate(nextDate);
+                            if (endDate < nextDate) {
+                                setEndDate(nextDate);
+                            }
                             if (nextDate === getLocalDateString() && !startTimeEdited) {
                                 setStartTime(getCurrentTimeString());
                             }
@@ -138,13 +128,26 @@ function RequestEquipmentModal({ setModalType, equipmentName, onRequestSubmitted
                     </div>
 
                     <div className="form-group">
+                        <label htmlFor="end-date" className="req-label">End Date:</label>
+                        <input
+                            id="end-date"
+                            className="req-input"
+                            type="date"
+                            value={endDate}
+                            min={date}
+                            onChange={e => setEndDate(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
                         <label htmlFor="time-end" className="req-label">End Time:</label>
                         <input
                             id="time-end"
                             className="req-input"
                             type="time"
                             value={endTime}
-                            min={date === today && startTime < getCurrentTimeString() ? getCurrentTimeString() : startTime}
+                            min={endDate === date ? startTime : undefined}
                             onChange={e => setEndTime(e.target.value)}
                             required
                         />

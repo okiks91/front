@@ -5,7 +5,16 @@ import { toast } from 'react-toastify';
 import Navbar from '../../components/navbar.jsx';
 import EquipmentCardWrapper from '../../components/navbarRoutes/equipment/equipmentCardWrapper.jsx';
 import OverTimeModal from '../../components/export/OverTimeModal.jsx';
-import { authFetch, getCookie, isBookingPastEnd } from '../../components/export/utility.jsx';
+import {
+    authFetch,
+    formatSectionLabel,
+    formatYearLevel,
+    getCookie,
+    getCourseLabel,
+    getRequesterDetails,
+    getRequesterSection,
+    isBookingPastEnd,
+} from '../../components/export/utility.jsx';
 
 
 import '../../styles/navbarRoutes/equipment/equipments.css';
@@ -28,18 +37,17 @@ function Equipments(){
     const role = user?.role;
     const canRequestEquipment = role === "studentOfficer" || role === "schoolFaculty";
 
-    const courseLabels = {
-        CpE: "BS Computer Engineering", ME: "BS Mechanical Engineering",
-        CE: "BS Civil Engineering", IE: "BS Industrial Engineering",
-        EE: "BS Electrical Engineering", ECE: "BS Electronics Engineering",
-    };
-    const course = courseLabels[user?.course] ?? user?.course ?? '';
-    const year = user?.year ? `${user.year}${['st','nd','rd'][user.year - 1] || 'th'} Year` : '';
+    const course = getCourseLabel(user?.course);
+    const year = formatYearLevel(user?.year);
+    const section = formatSectionLabel(user?.section);
     const userCourseYear = [course, year].filter(Boolean).join(' - ');
+    const userCourseYearSection = [course, year, section].filter(Boolean).join(' - ');
 
     const isVisible = useCallback((record) =>
         record.requesterEmail === user?.email ||
-        (userCourseYear && record.requesterDetails?.startsWith(userCourseYear)), [user?.email, userCourseYear]);
+        (userCourseYearSection && record.requesterDetails?.startsWith(userCourseYearSection)) ||
+        (!record.requesterSection && userCourseYear && record.requesterDetails?.startsWith(userCourseYear)),
+        [user?.email, userCourseYear, userCourseYearSection]);
 
     const [pendingRequests, setPendingRequests] = useState([]);
     const [approvedRequests, setApprovedRequests] = useState([]);
@@ -189,6 +197,17 @@ function Equipments(){
         return `${display}:${m} ${ampm}`;
     };
 
+    const formatTimeRange = (startTime, endTime) => {
+        if (!startTime && !endTime) return '-';
+        return `${formatTime(startTime)} - ${formatTime(endTime)}`;
+    };
+
+    const formatDateRange = (startDate, endDate) => {
+        if (!startDate && !endDate) return '-';
+        if (!endDate || startDate === endDate) return startDate || endDate;
+        return `${startDate} - ${endDate}`;
+    };
+
     return(
         <>
             <Navbar/>
@@ -220,14 +239,15 @@ function Equipments(){
                                 <tr>
                                     <th>EQUIPMENT</th>
                                     <th>NAME</th>
-                                    <th>START-TIME</th>
-                                    <th>END-TIME</th>
+                                    <th>SECTION</th>
+                                    <th>DATE</th>
+                                    <th>TIME</th>
                                 </tr>
                             </thead>
                             <tbody className='equipment-table-body'>
                                 {approvedRequests.filter(isVisible).length === 0 ? (
                                     <tr>
-                                        <td colSpan={4} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
+                                        <td colSpan={5} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
                                             No equipment currently in use.
                                         </td>
                                     </tr>
@@ -235,8 +255,9 @@ function Equipments(){
                                     <tr key={req.id}>
                                         <td>{req.equipmentName}</td>
                                         <td>{req.requesterName}</td>
-                                        <td>{formatTime(req.startTime)}</td>
-                                        <td>{formatTime(req.endTime)}</td>
+                                        <td>{getRequesterSection(req)}</td>
+                                        <td>{formatDateRange(req.date, req.endDate)}</td>
+                                        <td>{formatTimeRange(req.startTime, req.endTime)}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -253,24 +274,22 @@ function Equipments(){
                                 <tr>
                                     <th>EQUIPMENT</th>
                                     <th>DATE</th>
-                                    <th>START-TIME</th>
-                                    <th>END-TIME</th>
+                                    <th>TIME</th>
                                     <th>PURPOSE</th>
                                 </tr>
                             </thead>
                             <tbody className='equipment-table-body'>
                                 {pendingRequests.filter(isVisible).length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
+                                        <td colSpan={4} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
                                             No pending requests.
                                         </td>
                                     </tr>
                                 ) : pendingRequests.filter(isVisible).map((req) => (
                                     <tr key={req.id}>
                                         <td>{req.equipmentName}</td>
-                                        <td>{req.date}</td>
-                                        <td>{formatTime(req.startTime)}</td>
-                                        <td>{formatTime(req.endTime)}</td>
+                                        <td>{formatDateRange(req.date, req.endDate)}</td>
+                                        <td>{formatTimeRange(req.startTime, req.endTime)}</td>
                                         <td>{req.purpose}</td>
                                     </tr>
                                 ))}
@@ -292,8 +311,9 @@ function Equipments(){
                                         <th>EQUIPMENT</th>
                                         <th>NAME</th>
                                         <th>DETAILS</th>
-                                        <th>START-TIME</th>
-                                        <th>END-TIME</th>
+                                        <th>SECTION</th>
+                                        <th>DATE</th>
+                                        <th>TIME</th>
                                         <th>PURPOSE</th>
                                         <th>ACTION</th>
                                     </tr>
@@ -301,7 +321,7 @@ function Equipments(){
                                 <tbody className='equipment-table-body'>
                                     {pendingRequests.length === 0 ? (
                                         <tr>
-                                            <td colSpan={8} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
+                                            <td colSpan={9} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
                                                 No pending requests.
                                             </td>
                                         </tr>
@@ -310,9 +330,10 @@ function Equipments(){
                                             <td>{index + 1}</td>
                                             <td>{req.equipmentName}</td>
                                             <td>{req.requesterName}</td>
-                                            <td>{req.requesterDetails}</td>
-                                            <td>{formatTime(req.startTime)}</td>
-                                            <td>{formatTime(req.endTime)}</td>
+                                            <td>{getRequesterDetails(req)}</td>
+                                            <td>{getRequesterSection(req)}</td>
+                                            <td>{formatDateRange(req.date, req.endDate)}</td>
+                                            <td>{formatTimeRange(req.startTime, req.endTime)}</td>
                                             <td>{req.purpose}</td>
                                             <td>
                                                 <div>
@@ -350,15 +371,16 @@ function Equipments(){
                                         <th>EQUIPMENT</th>
                                         <th>NAME</th>
                                         <th>DETAILS</th>
-                                        <th>START-TIME</th>
-                                        <th>END-TIME</th>
+                                        <th>SECTION</th>
+                                        <th>DATE</th>
+                                        <th>TIME</th>
                                         <th>ACTION</th>
                                     </tr>
                                 </thead>  
                                 <tbody className='equipment-table-body'>
                                     {approvedRequests.length === 0 ? (
                                         <tr>
-                                            <td colSpan={7} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
+                                            <td colSpan={8} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
                                                 No equipment currently in use.
                                             </td>
                                         </tr>
@@ -367,9 +389,10 @@ function Equipments(){
                                             <td>{index + 1}</td>
                                             <td>{req.equipmentName}</td>
                                             <td>{req.requesterName}</td>
-                                            <td>{req.requesterDetails}</td>
-                                            <td>{formatTime(req.startTime)}</td>
-                                            <td>{formatTime(req.endTime)}</td>
+                                            <td>{getRequesterDetails(req)}</td>
+                                            <td>{getRequesterSection(req)}</td>
+                                            <td>{formatDateRange(req.date, req.endDate)}</td>
+                                            <td>{formatTimeRange(req.startTime, req.endTime)}</td>
                                             <td>
                                                 <button
                                                     className='available-in-use-btn'
@@ -396,13 +419,16 @@ function Equipments(){
                                         <th>EQUIPMENT</th>
                                         <th>STATUS</th>
                                         <th>REASON</th>
+                                        <th>SECTION</th>
+                                        <th>DATE</th>
+                                        <th>TIME</th>
                                         <th>ACTION</th>
                                     </tr>
                                 </thead>  
                                 <tbody className='equipment-table-body'>
                                     {equipmentStatuses.length === 0 ? (
                                         <tr>
-                                            <td colSpan={5} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
+                                            <td colSpan={8} style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
                                                 All equipment available.
                                             </td>
                                         </tr>
@@ -412,6 +438,9 @@ function Equipments(){
                                             <td>{item.equipmentName}</td>
                                             <td>{item.status}</td>
                                             <td>{item.reason}</td>
+                                            <td>{formatSectionLabel(item.requesterSection) || '-'}</td>
+                                            <td>{formatDateRange(item.date, item.endDate)}</td>
+                                            <td>{formatTimeRange(item.startTime, item.endTime)}</td>
                                             <td>
                                                 <button
                                                     className='available-in-use-btn'

@@ -4,34 +4,10 @@ import React, { useState } from "react";
 import Navbar from '../../../components/navbar.jsx';
 import ChangePasswordModal from "../../../components/navbarRoutes/profile/changePasswordModal.jsx";
 import ProfilePic from '../../../assets/images/pissinthewind.png';
-import { getCookie } from "../../../components/export/utility.jsx";
+import { formatSectionLabel, formatYearLevel, getCookie, getCourseLabel, getPositionLabel } from "../../../components/export/utility.jsx";
 
 
 import '../../../styles/profile/profile.css';
-
-
-const courseLabels = {
-    CpE: "BS Computer Engineering",
-    ME: "BS Mechanical Engineering",
-    CE: "BS Civil Engineering",
-    IE: "BS Industrial Engineering",
-    EE: "BS Electrical Engineering",
-    ECE: "BS Electronics Engineering",
-};
-
-const positionLabels = {
-    president: "President",
-    vicePresident: "Vice President",
-    secretary: "Secretary",
-    treasurer: "Treasurer",
-};
-
-const yearLabels = {
-    1: "1st Year",
-    2: "2nd Year",
-    3: "3rd Year",
-    4: "4th Year",
-};
 
 
 function Profile(){
@@ -39,9 +15,10 @@ function Profile(){
     const user = JSON.parse(getCookie("user"));
     const role = user?.role;
     const fullName = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim();
-    const course = courseLabels[user?.course] ?? user?.course ?? "—";
-    const year = yearLabels[user?.year] ?? (user?.year ? `Year ${user.year}` : "—");
-    const position = positionLabels[user?.position] ?? user?.position ?? "—";
+    const course = getCourseLabel(user?.course) || "N/A";
+    const year = formatYearLevel(user?.year) || "N/A";
+    const section = formatSectionLabel(user?.section) || "N/A";
+    const position = getPositionLabel(user?.position) || "N/A";
 
     const [modalChangePassword, setModalChangePassword] = useState(false);
 
@@ -98,6 +75,10 @@ function Profile(){
                                     <tr className="profile-data-row">
                                         <td className="profile-data-info">Course</td>
                                         <td className="profile-data-info">{course}</td>
+                                    </tr>
+                                    <tr className="profile-data-row">
+                                        <td className="profile-data-info">Section</td>
+                                        <td className="profile-data-info">{section}</td>
                                     </tr>
                                     <tr className="profile-data-row">
                                         <td className="profile-data-info">Student Officer</td>

@@ -70,6 +70,79 @@ export const apiFetch = (url, options = {}) => {
     });
 }
 
+export const COURSE_LABELS = {
+    CpE: "BS Computer Engineering",
+    ME: "BS Mechanical Engineering",
+    CE: "BS Civil Engineering",
+    IE: "BS Industrial Engineering",
+    EE: "BS Electrical Engineering",
+    ECE: "BS Electronics Engineering",
+}
+
+export const POSITION_LABELS = {
+    president: "President",
+    vicePresident: "Vice President",
+    secretary: "Secretary",
+    treasurer: "Treasurer",
+}
+
+export const getCourseLabel = (course) => {
+    return COURSE_LABELS[course] ?? course ?? '';
+}
+
+export const getPositionLabel = (position) => {
+    return POSITION_LABELS[position] ?? position ?? '';
+}
+
+export const formatYearLevel = (year) => {
+    if (!year) return '';
+
+    const numericYear = Number(year);
+    if (!Number.isNaN(numericYear)) {
+        const suffix = ['st', 'nd', 'rd'][numericYear - 1] || 'th';
+        return `${numericYear}${suffix} Year`;
+    }
+
+    return String(year);
+}
+
+export const formatSectionLabel = (section) => {
+    const trimmedSection = String(section ?? '').trim();
+    if (!trimmedSection) return '';
+
+    return /^section\b/i.test(trimmedSection) ? trimmedSection : `Section ${trimmedSection}`;
+}
+
+export const buildRequesterDetails = (user) => {
+    return [
+        getCourseLabel(user?.course),
+        formatYearLevel(user?.year),
+        formatSectionLabel(user?.section),
+        getPositionLabel(user?.position),
+    ].filter(Boolean).join(' - ');
+}
+
+export const getRequesterDetails = (record) => {
+    if (record?.requesterDetails) return record.requesterDetails;
+
+    const details = [
+        getCourseLabel(record?.requesterCourse),
+        formatYearLevel(record?.requesterYear),
+        formatSectionLabel(record?.requesterSection),
+        getPositionLabel(record?.requesterPosition),
+    ].filter(Boolean).join(' - ');
+
+    return details || '-';
+}
+
+export const getRequesterSection = (record) => {
+    const directSection = formatSectionLabel(record?.requesterSection);
+    if (directSection) return directSection;
+
+    const sectionFromDetails = record?.requesterDetails?.match(/\bSection\s+([^-]+)/i)?.[1]?.trim();
+    return formatSectionLabel(sectionFromDetails) || '-';
+}
+
 export const getLocalDateString = (date = new Date()) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');

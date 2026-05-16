@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 
 import Navbar from '../../../components/navbar.jsx';
-import { authFetch } from '../../../components/export/utility.jsx';
+import { authFetch, getRequesterDetails, getRequesterSection } from '../../../components/export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/history.css';
@@ -55,6 +55,7 @@ function History() {
                                         <th>EQUIPMENT</th>
                                         <th>NAME</th>
                                         <th>DETAILS</th>
+                                        <th>SECTION</th>
                                         <th>START-TIME</th>
                                         <th>END-TIME</th>
                                         <th>REMARKS</th>
@@ -67,7 +68,8 @@ function History() {
                                             <td>{r.date}</td>
                                             <td>{r.equipmentName}</td>
                                             <td>{r.requesterName}</td>
-                                            <td>{r.requesterDetails}</td>
+                                            <td>{getRequesterDetails(r)}</td>
+                                            <td>{getRequesterSection(r)}</td>
                                             <td>{r.startTime}</td>
                                             <td>{r.endTime}</td>
                                             <td>Returned</td>
@@ -93,6 +95,7 @@ function History() {
                                         <th>FACILITY NAME</th>
                                         <th>NAME</th>
                                         <th>DETAILS</th>
+                                        <th>SECTION</th>
                                         <th>START-TIME</th>
                                         <th>END-TIME</th>
                                         <th>REMARKS</th>
@@ -106,7 +109,8 @@ function History() {
                                             <td>{r.floorName}</td>
                                             <td>{r.roomName}</td>
                                             <td>{r.requesterName}</td>
-                                            <td>{r.requesterDetails}</td>
+                                            <td>{getRequesterDetails(r)}</td>
+                                            <td>{getRequesterSection(r)}</td>
                                             <td>{r.startTime}</td>
                                             <td>{r.endTime}</td>
                                             <td>Finished</td>

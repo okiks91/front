@@ -7,7 +7,15 @@ import FacilityCardWrapper from '../../components/navbarRoutes/facilities/facili
 import EndOccupyFacilityModal from '../../components/navbarRoutes/facilities/endOccupyFacilityModal.jsx';
 import OverTimeModal from '../../components/export/OverTimeModal.jsx';
 import { facilitiesArray }  from '../../components/export/constant.jsx';
-import { authFetch, getBookingEndDateTime, getCookie, isBookingPastEnd } from '../../components/export/utility.jsx';
+import {
+    authFetch,
+    formatSectionLabel,
+    formatYearLevel,
+    getBookingEndDateTime,
+    getCookie,
+    getCourseLabel,
+    isBookingPastEnd,
+} from '../../components/export/utility.jsx';
 
 
 import '../../styles/navbarRoutes/facilities/facility.css';
@@ -18,18 +26,16 @@ function Facilities(){
     const user = JSON.parse(getCookie("user") || 'null');
     const role = user?.role;
 
-    const courseLabels = {
-        CpE: "BS Computer Engineering", ME: "BS Mechanical Engineering",
-        CE: "BS Civil Engineering", IE: "BS Industrial Engineering",
-        EE: "BS Electrical Engineering", ECE: "BS Electronics Engineering",
-    };
-    const course = courseLabels[user?.course] ?? user?.course ?? '';
-    const year = user?.year ? `${user.year}${['st','nd','rd'][user.year - 1] || 'th'} Year` : '';
+    const course = getCourseLabel(user?.course);
+    const year = formatYearLevel(user?.year);
+    const section = formatSectionLabel(user?.section);
     const userCourseYear = [course, year].filter(Boolean).join(' - ');
+    const userCourseYearSection = [course, year, section].filter(Boolean).join(' - ');
 
     const isVisible = (record) =>
         record.requesterEmail === user?.email ||
-        (userCourseYear && record.requesterDetails?.startsWith(userCourseYear));
+        (userCourseYearSection && record.requesterDetails?.startsWith(userCourseYearSection)) ||
+        (!record.requesterSection && userCourseYear && record.requesterDetails?.startsWith(userCourseYear));
     const [floor, setFloor] = useState(facilitiesArray[0].id);
     const [showEndOccupyFacilityModal, setEndOccupyFacilityModal] = useState(false);
     const [selectedOccupancy, setSelectedOccupancy] = useState(null);
@@ -144,6 +150,26 @@ function Facilities(){
         setEndOccupyFacilityModal(true);
     };
 
+    const formatTime = (time) => {
+        if (!time) return '-';
+        const [hours, minutes] = time.split(':');
+        const hour = parseInt(hours, 10);
+        const period = hour >= 12 ? 'PM' : 'AM';
+        const displayHour = hour % 12 || 12;
+        return `${displayHour}:${minutes} ${period}`;
+    };
+
+    const formatTimeRange = (startTime, endTime) => {
+        if (!startTime && !endTime) return '-';
+        return `${formatTime(startTime)} - ${formatTime(endTime)}`;
+    };
+
+    const formatDateRange = (startDate, endDate) => {
+        if (!startDate && !endDate) return '-';
+        if (!endDate || startDate === endDate) return startDate || endDate;
+        return `${startDate} - ${endDate}`;
+    };
+
     return(
         <>
             <Navbar/>
@@ -213,10 +239,8 @@ function Facilities(){
                                     <th>FLOOR No.</th>
                                     <th>FACILITY NAME</th>
                                     <th>DETAILS</th>
-                                    <th>START-DATE</th>
-                                    <th>END-DATE</th>
-                                    <th>START-TIME</th>
-                                    <th>END-TIME</th>
+                                    <th>DATE</th>
+                                    <th>TIME</th>
                                     <th>ACTION</th>
                                 </tr>
                             </thead>  
@@ -229,10 +253,8 @@ function Facilities(){
                                         <td>
                                             <div>{r.reason}</div>
                                         </td>
-                                        <td>{r.date}</td>
-                                        <td>{r.endDate || r.date}</td>
-                                        <td>{r.startTime}</td>
-                                        <td>{r.endTime}</td>
+                                        <td>{formatDateRange(r.date, r.endDate)}</td>
+                                        <td>{formatTimeRange(r.startTime, r.endTime)}</td>
                                         <td>
                                             <button className='available-in-use-btn' onClick={() => handleMarkAvailable(r.id)}>Available</button>
                                         </td>
