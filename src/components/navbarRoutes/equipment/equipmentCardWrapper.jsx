@@ -36,6 +36,12 @@ function EquipmentCardWrapper({ equipmentStatuses = [], onStatusChanged }){
                         />
                     ))
                 }
+                {role === 'systemAdmin' && (
+                    <button className="equipmentCard addEquipmentCard" type="button" aria-label="Add equipment">
+                        <span className="add-card-plus">+</span>
+                        <span className="add-card-label">add equipment</span>
+                    </button>
+                )}
             </div>  
         </>
     );

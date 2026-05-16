@@ -47,6 +47,43 @@
     background-color: gold;
 }
 
+.equipmentCard.addEquipmentCard{
+    align-items: center;
+    border: none;
+    color: #2f2f2f;
+    cursor: pointer;
+    font: inherit;
+    gap: 20px;
+    min-height: 400px;
+    min-width: 400px;
+    padding: 40px 20px;
+}
+
+.equipmentCard.addEquipmentCard .add-card-plus{
+    align-items: center;
+    aspect-ratio: 1 / 1;
+    border: 3px dashed maroon;
+    color: maroon;
+    display: flex;
+    font-size: 90px;
+    font-weight: 300;
+    justify-content: center;
+    line-height: 1;
+    width: 150px;
+}
+
+.equipmentCard.addEquipmentCard .add-card-label{
+    color: #2f2f2f;
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: lowercase;
+}
+
+.equipmentCard.addEquipmentCard:focus-visible{
+    outline: 3px solid gold;
+    outline-offset: 4px;
+}
+
 /* Phones */
 @media (max-width: 480px) {
     .equipmentCard{
@@ -58,6 +95,17 @@
     .equipmentCard .card-image{
         width: 300px;
         height: 400px;
+    }
+
+    .equipmentCard.addEquipmentCard{
+        min-height: 400px;
+        min-width: 300px;
+        padding: 30px 20px;
+    }
+
+    .equipmentCard.addEquipmentCard .add-card-plus{
+        font-size: 70px;
+        width: 120px;
     }
 }
 
