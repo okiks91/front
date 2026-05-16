@@ -54,6 +54,10 @@ const formatSectionValue = (record) => {
     return section.replace(/^section\s+/i, '');
 };
 
+const formatDetailsValue = (details) => {
+    return String(details || '-').replace(/\bSection\s+([^-]*?)(?=\s*-|$)/gi, (_, section) => section.trim());
+};
+
 
 function Tables() {
 
@@ -107,7 +111,7 @@ function Tables() {
             type: 'equipment-request',
             equipment: r.equipmentName,
             name: r.requesterName,
-            details: getRequesterDetails(r),
+            details: formatDetailsValue(getRequesterDetails(r)),
             section: formatSectionValue(r),
             date: r.date,
             endDate: r.endDate || r.date,
@@ -120,7 +124,7 @@ function Tables() {
             type: 'equipment-status',
             equipment: s.equipmentName,
             name: 'System Admin',
-            details: s.reason,
+            details: formatDetailsValue(s.reason),
             section: String(s.requesterSection ?? '').trim().replace(/^section\s+/i, '') || '-',
             date: s.date,
             endDate: s.endDate || s.date,
@@ -137,7 +141,7 @@ function Tables() {
             floorName: o.floorName,
             roomName: o.roomName,
             name: o.requesterName,
-            details: getRequesterDetails(o),
+            details: formatDetailsValue(getRequesterDetails(o)),
             section: formatSectionValue(o),
             date: o.date,
             endDate: o.endDate || o.date,
@@ -151,7 +155,7 @@ function Tables() {
             floorName: r.floorName,
             roomName: r.roomName,
             name: 'System Admin',
-            details: r.reason,
+            details: formatDetailsValue(r.reason),
             section: String(r.requesterSection ?? '').trim().replace(/^section\s+/i, '') || '-',
             date: r.date,
             endDate: r.endDate || r.date,
