@@ -1,14 +1,17 @@
 .tableHistory-equipment-main-container, .tableHistory-facility-main-container{
     margin-left: 220px;
+    box-sizing: border-box;
 }
 
-.whole-container{
+.history-whole-container{
     padding: 70px 30px 0px 30px;
+    box-sizing: border-box;
 }
 
 .tableHistory-select{
     display: flex;
     justify-content: center;
+    margin-left: 220px;
 }
 .tableHistory-select select{
     margin-top: 30px;
@@ -33,6 +36,8 @@
     min-height: 580px;
     height: 70%;
     overflow-x: auto;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .equipment-tableHistory-container h1{
@@ -65,6 +70,7 @@
     background-color: rgb(240, 240, 240);
     padding: 10px;
     text-align: center;   
+    overflow-wrap: anywhere;
 }
 
 .equipment-tableHistory-body .in-use-btn{
@@ -95,6 +101,8 @@
     min-height: 580px;
     height: 70%;
     overflow-x: auto;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .facility-tableHistory-container h1{
@@ -127,6 +135,7 @@
     background-color: rgb(240, 240, 240);
     padding: 10px;
     text-align: center;   
+    overflow-wrap: anywhere;
 }
 
 .facilities-tableHistory-body .in-use-btn{
@@ -147,21 +156,32 @@
 /* Phones */
 @media (max-width: 480px) {
     .tableHistory-select, 
-    .whole-container, 
+    .history-whole-container, 
     .tableHistory-equipment-main-container, 
     .tableHistory-facility-main-container{
         margin-left: 0;
         height: 70%;
     }
 
+    .history-whole-container{
+        padding: 40px 12px 0;
+    }
+
+    .tableHistory-select select{
+        width: min(90vw, 300px);
+    }
+
     .equipment-tableHistory-container, 
     .facility-tableHistory-container{
-        padding: 20px;
+        padding: 18px 12px;
+        min-height: auto;
     }
 
     .equipment-tableHistory,
     .facilities-tableHistory{
         margin-top: 20px;
+        min-width: 720px;
+        border-spacing: 6px;
     } 
 
     .facility-tableHistory-container h1, 
@@ -172,7 +192,13 @@
 
     .facilities-tableHistory-header th,
     .equipment-tableHistory-header th{
-        font-size: 8px;
+        font-size: 9px;
+    }
+
+    .facilities-tableHistory-body td,
+    .equipment-tableHistory-body td{
+        font-size: 10px;
+        padding: 8px;
     }
     
 
@@ -181,22 +207,32 @@
 /* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     .tableHistory-select, 
-    .whole-container, 
+    .history-whole-container, 
     .tableHistory-equipment-main-container, 
     .tableHistory-facility-main-container{
         margin-left: 0;
         height: 70%;
     }
 
+    .history-whole-container{
+        padding: 45px 18px 0;
+    }
+
+    .tableHistory-select select{
+        width: min(70vw, 320px);
+    }
+
     .equipment-tableHistory-container, 
     .facility-tableHistory-container{
-        padding: 20px;
+        padding: 20px 16px;
+        min-height: auto;
     }
 
     .equipment-tableHistory,
     .facilities-tableHistory{
         margin-top: 20px;
-        min-width: 500px;
+        min-width: 820px;
+        border-spacing: 8px;
     } 
 
     .facility-tableHistory-container h1, 
@@ -207,7 +243,13 @@
 
     .facilities-tableHistory-header th,
     .equipment-tableHistory-header th{
-        font-size: 8px;
+        font-size: 10px;
+    }
+
+    .facilities-tableHistory-body td,
+    .equipment-tableHistory-body td{
+        font-size: 11px;
+        padding: 8px;
     }
 }
 
@@ -215,7 +257,12 @@
 
     .facilities-tableHistory-header th,
     .equipment-tableHistory-header th{
-        font-size: 8px;
+        font-size: 10px;
+    }
+
+    .facilities-tableHistory-body td,
+    .equipment-tableHistory-body td{
+        font-size: 11px;
     }
 
     

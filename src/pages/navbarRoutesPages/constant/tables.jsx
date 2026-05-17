@@ -196,7 +196,7 @@ function Tables() {
                 </select>
             </header>
             
-            <div className="whole-container">
+            <div className="whole-container tables-whole-container">
 
                 {table === "equipment" && (            
                     <div className="table-equipment-main-container">

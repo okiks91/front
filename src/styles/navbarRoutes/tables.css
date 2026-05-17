@@ -1,14 +1,17 @@
 .table-equipment-main-container, .table-facility-main-container{
     margin-left: 220px;
+    box-sizing: border-box;
 }
 
-.whole-container{
+.tables-whole-container{
     padding: 50px 30px 0px 30px;
+    box-sizing: border-box;
 }
 
 .table-select{
     display: flex;
     justify-content: center;
+    margin-left: 220px;
 }
 .table-select select{
     margin-top: 30px;
@@ -33,6 +36,8 @@
     min-height: 580px;
     height: 70%;
     overflow-x: auto;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .equipment-table-container h1{
@@ -65,6 +70,7 @@
     background-color: rgb(240, 240, 240);
     padding: 10px;
     text-align: center;   
+    overflow-wrap: anywhere;
 }
 
 .equipment-table-body .in-use-btn{
@@ -120,6 +126,8 @@
     min-height: 580px;
     height: 70%;
     overflow-x: auto;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .facility-table-container h1{
@@ -152,6 +160,7 @@
     background-color: rgb(240, 240, 240);
     padding: 10px;
     text-align: center;   
+    overflow-wrap: anywhere;
 }
 
 .facilities-table-body .in-use-btn{
@@ -173,21 +182,32 @@
 /* Phones */
 @media (max-width: 480px) {
     .table-select, 
-    .whole-container, 
+    .tables-whole-container, 
     .table-equipment-main-container, 
     .table-facility-main-container{
         margin-left: 0;
         height: 70%;
     }
 
+    .tables-whole-container{
+        padding: 40px 12px 0;
+    }
+
+    .table-select select{
+        width: min(90vw, 300px);
+    }
+
     .equipment-table-container, 
     .facility-table-container{
-        padding: 20px;
+        padding: 18px 12px;
+        min-height: auto;
     }
 
     .equipment-table,
     .facilities-table{
         margin-top: 20px;
+        min-width: 680px;
+        border-spacing: 6px;
     } 
 
     .facility-table-container h1, 
@@ -198,7 +218,13 @@
 
     .facilities-table-header th,
     .equipment-table-header th{
-        font-size: 8px;
+        font-size: 9px;
+    }
+
+    .facilities-table-body td,
+    .equipment-table-body td{
+        font-size: 10px;
+        padding: 8px;
     }
     
 
@@ -207,22 +233,32 @@
 /* Tablets */
 @media (min-width: 481px) and (max-width: 768px) {
     .table-select, 
-    .whole-container, 
+    .tables-whole-container, 
     .table-equipment-main-container, 
     .table-facility-main-container{
         margin-left: 0;
         height: 70%;
     }
 
+    .tables-whole-container{
+        padding: 45px 18px 0;
+    }
+
+    .table-select select{
+        width: min(70vw, 320px);
+    }
+
     .equipment-table-container, 
     .facility-table-container{
-        padding: 20px;
+        padding: 20px 16px;
+        min-height: auto;
     }
 
     .equipment-table,
     .facilities-table{
         margin-top: 20px;
-        min-width: 500px;
+        min-width: 760px;
+        border-spacing: 8px;
     } 
 
     .facility-table-container h1, 
@@ -233,7 +269,13 @@
 
     .facilities-table-header th,
     .equipment-table-header th{
-        font-size: 8px;
+        font-size: 10px;
+    }
+
+    .facilities-table-body td,
+    .equipment-table-body td{
+        font-size: 11px;
+        padding: 8px;
     }
 }
 
@@ -241,6 +283,11 @@
 
     .facilities-table-header th,
     .equipment-table-header th{
-        font-size: 8px;
+        font-size: 10px;
+    }
+
+    .facilities-table-body td,
+    .equipment-table-body td{
+        font-size: 11px;
     }
 }

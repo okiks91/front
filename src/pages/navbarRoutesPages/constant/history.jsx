@@ -103,7 +103,7 @@ function History() {
                 </select>
             </header>
             
-            <div className="whole-container">
+            <div className="whole-container history-whole-container">
                 {tableHistory === "equipmentHistory" && (            
                     <div className="tableHistory-equipment-main-container">
                         <section className='equipment-tableHistory-container'>

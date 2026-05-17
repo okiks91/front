@@ -205,17 +205,33 @@ function Profile(){
             <Navbar/>
 
             <div className="profile-main-container">
-                {(role === "systemAdmin" || role === "schoolFaculty")  && (
+                {role === "systemAdmin" && (
                     <>
                         <div className="profile-container-systemSchoolAdmin">
                             {renderAvatarUploader()}
 
-                            <h1 className="profile-name-systemSchoolAdmin">{fullName || (role === "systemAdmin" ? "System Admin" : "School Faculty")}</h1>
+                            <h1 className="profile-name-systemSchoolAdmin">{fullName || "System Admin"}</h1>
                             <button 
                                 className="update-btn-systemSchoolAdmin"
                                 onClick={handleChangePassword}
                                 >
                                     Change Password
+                            </button>
+                        </div>
+                    </>
+                )}
+
+                {role === "schoolFaculty" && (
+                    <>
+                        <div className="profile-container profile-container-faculty">
+                            {renderAvatarUploader()}
+
+                            <h1 className="profile-name">{fullName || "School Faculty"}</h1>
+                            <button
+                                className="update-btn-systemSchoolAdmin"
+                                onClick={handleChangePassword}
+                            >
+                                Change Password
                             </button>
                         </div>
                     </>
@@ -262,10 +278,10 @@ function Profile(){
 
                 {role === "teacherFaculty" && (
                     <>
-                        <div className="profile-container-systemSchoolAdmin">
+                        <div className="profile-container profile-container-faculty">
                             {renderAvatarUploader()}
 
-                            <h1 className="profile-name-systemSchoolAdmin">{fullName}</h1>
+                            <h1 className="profile-name">{fullName || "School Faculty"}</h1>
                             <button 
                                 className="update-btn-systemSchoolAdmin"
                                 onClick={handleChangePassword}
