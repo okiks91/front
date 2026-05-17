@@ -97,6 +97,48 @@ export const apiFetch = (url, options = {}) => {
     });
 }
 
+export const subscribeToRealtimeSnapshots = ({ onSnapshot, onError }) => {
+    if (typeof EventSource === 'undefined') {
+        onError?.(new Error('Realtime updates are not supported in this browser.'));
+        return () => {};
+    }
+
+    const token = getAuthToken();
+    if (!token) {
+        onError?.(new Error('Missing authentication token for realtime updates.'));
+        return () => {};
+    }
+
+    const source = new EventSource(apiUrl(`/realtime/stream?token=${encodeURIComponent(token)}`));
+    let lastErrorFallbackAt = 0;
+
+    const handleSnapshot = (event) => {
+        try {
+            onSnapshot?.(JSON.parse(event.data));
+        } catch (error) {
+            console.error('Realtime snapshot parse error:', error);
+            onError?.(error);
+        }
+    };
+
+    const handleError = (event) => {
+        const now = Date.now();
+        if (now - lastErrorFallbackAt < 5000) return;
+
+        lastErrorFallbackAt = now;
+        onError?.(event);
+    };
+
+    source.addEventListener('snapshot', handleSnapshot);
+    source.addEventListener('error', handleError);
+
+    return () => {
+        source.removeEventListener('snapshot', handleSnapshot);
+        source.removeEventListener('error', handleError);
+        source.close();
+    };
+}
+
 export const COURSE_LABELS = {
     CpE: "BS Computer Engineering",
     ME: "BS Mechanical Engineering",

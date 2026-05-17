@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 
 import Navbar from '../../../components/navbar.jsx';
-import { authFetch, formatTimeRange, getRequesterDetails, getRequesterSection } from '../../../components/export/utility.jsx';
+import { authFetch, formatTimeRange, getRequesterDetails, getRequesterSection, subscribeToRealtimeSnapshots } from '../../../components/export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/tables.css';
@@ -77,7 +77,7 @@ function Tables() {
     const [facilityReservations, setFacilityReservations] = useState([]);
     const [tableErrors, setTableErrors] = useState({});
 
-    const fetchAll = async () => {
+    const fetchAll = useCallback(async () => {
         const [
             equipmentRequestsResult,
             equipmentStatusesResult,
@@ -101,16 +101,28 @@ function Tables() {
             facilityOccupancies: facilityOccupanciesResult.error,
             facilityReservations: facilityReservationsResult.error,
         });
-    };
+    }, []);
+
+    const applyTablesSnapshot = useCallback((tables = {}) => {
+        setEquipmentRequests(Array.isArray(tables.equipmentRequests) ? tables.equipmentRequests : []);
+        setEquipmentStatuses(Array.isArray(tables.equipmentStatuses) ? tables.equipmentStatuses : []);
+        setFacilityOccupancies(Array.isArray(tables.facilityOccupancies) ? tables.facilityOccupancies : []);
+        setFacilityReservations(Array.isArray(tables.facilityReservations) ? tables.facilityReservations : []);
+        setTableErrors({});
+    }, []);
 
     useEffect(() => {
         const initialFetch = setTimeout(fetchAll, 0);
-        const interval = setInterval(fetchAll, 5000);
+        const unsubscribe = subscribeToRealtimeSnapshots({
+            onSnapshot: (snapshot) => applyTablesSnapshot(snapshot?.tables),
+            onError: fetchAll,
+        });
+
         return () => {
             clearTimeout(initialFetch);
-            clearInterval(interval);
+            unsubscribe();
         };
-    }, []);
+    }, [applyTablesSnapshot, fetchAll]);
 
     const sortByDateTimeDesc = (a, b) => {
         const dateCompare = (b.date || '').localeCompare(a.date || '');

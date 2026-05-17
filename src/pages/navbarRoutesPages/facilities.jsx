@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 
@@ -17,6 +17,7 @@ import {
     getCourseLabel,
     getStoredUser,
     isBookingPastEnd,
+    subscribeToRealtimeSnapshots,
 } from '../../components/export/utility.jsx';
 
 
@@ -35,10 +36,11 @@ function Facilities(){
     const userCourseYear = [course, year].filter(Boolean).join(' - ');
     const userCourseYearSection = [course, year, section].filter(Boolean).join(' - ');
 
-    const isVisible = (record) =>
+    const isVisible = useCallback((record) =>
         record.requesterEmail === user?.email ||
         (userCourseYearSection && record.requesterDetails?.startsWith(userCourseYearSection)) ||
-        (!record.requesterSection && userCourseYear && record.requesterDetails?.startsWith(userCourseYear));
+        (!record.requesterSection && userCourseYear && record.requesterDetails?.startsWith(userCourseYear)),
+        [user?.email, userCourseYear, userCourseYearSection]);
     const [floor, setFloor] = useState(facilitiesArray[0].id);
     const [showEndOccupyFacilityModal, setEndOccupyFacilityModal] = useState(false);
     const [selectedOccupancy, setSelectedOccupancy] = useState(null);
@@ -52,7 +54,7 @@ function Facilities(){
 
     const dismissedRef = useRef(new Set());
 
-    const checkOvertime = (data) => {
+    const checkOvertime = useCallback((data) => {
         const overdue = data.filter(o => isVisible(o) && isBookingPastEnd(o));
         if (overdue.length > 0) {
             const newOverdue = overdue.filter(o => !dismissedRef.current.has(o.id) && !autoEndTimers.current[o.id + '-end']);
@@ -73,58 +75,60 @@ function Facilities(){
                 });
             }
         }
-    };
+    }, [isVisible]);
 
-    const fetchOccupancies = () => {
+    const applyOccupancies = useCallback((data = []) => {
+        setOccupancies(data);
+        checkOvertime(data);
+
+        data.filter(o => isVisible(o) && o.endTime).forEach(o => {
+            if (autoEndTimers.current[o.id + '-notify'] || dismissedRef.current.has(o.id)) return;
+            const now = new Date();
+            const endDate = getBookingEndDateTime(o);
+            if (!endDate) return;
+            const msUntilEnd = endDate - now;
+            if (msUntilEnd > 0) {
+                autoEndTimers.current[o.id + '-notify'] = setTimeout(() => {
+                    if (dismissedRef.current.has(o.id)) return;
+                    setOverTimeItems(prev => {
+                        const already = prev.find(x => x.id === o.id);
+                        if (already) return prev;
+                        return [...prev, { name: o.roomName, endTime: o.endTime, id: o.id }];
+                    });
+                    setShowOverTimeModal(true);
+                    autoEndTimers.current[o.id + '-end'] = setTimeout(() => {
+                        authFetch(`/facility-occupancy/${o.id}/end`, { method: 'POST' })
+                            .then(() => {
+                                setOverTimeItems([{ name: o.roomName, endTime: o.endTime, id: o.id, ended: true }]);
+                                setShowOverTimeModal(true);
+                                if (fetchOccupanciesRef.current) fetchOccupanciesRef.current();
+                            })
+                            .catch(console.error);
+                        delete autoEndTimers.current[o.id + '-end'];
+                        delete autoEndTimers.current[o.id + '-notify'];
+                    }, 5 * 60 * 1000);
+                }, msUntilEnd);
+            }
+        });
+    }, [checkOvertime, isVisible]);
+
+    const fetchOccupancies = useCallback(() => {
         authFetch('/facility-occupancies')
             .then(res => res.json())
-            .then(data => {
-                setOccupancies(data);
-                checkOvertime(data);
-
-                data.filter(o => isVisible(o) && o.endTime).forEach(o => {
-                    if (autoEndTimers.current[o.id + '-notify'] || dismissedRef.current.has(o.id)) return;
-                    const now = new Date();
-                    const endDate = getBookingEndDateTime(o);
-                    if (!endDate) return;
-                    const msUntilEnd = endDate - now;
-                    if (msUntilEnd > 0) {
-                        autoEndTimers.current[o.id + '-notify'] = setTimeout(() => {
-                            if (dismissedRef.current.has(o.id)) return;
-                            setOverTimeItems(prev => {
-                                const already = prev.find(x => x.id === o.id);
-                                if (already) return prev;
-                                return [...prev, { name: o.roomName, endTime: o.endTime, id: o.id }];
-                            });
-                            setShowOverTimeModal(true);
-                            autoEndTimers.current[o.id + '-end'] = setTimeout(() => {
-                                authFetch(`/facility-occupancy/${o.id}/end`, { method: 'POST' })
-                                    .then(() => {
-                                        setOverTimeItems([{ name: o.roomName, endTime: o.endTime, id: o.id, ended: true }]);
-                                        setShowOverTimeModal(true);
-                                        if (fetchOccupanciesRef.current) fetchOccupanciesRef.current();
-                                    })
-                                    .catch(console.error);
-                                delete autoEndTimers.current[o.id + '-end'];
-                                delete autoEndTimers.current[o.id + '-notify'];
-                            }, 5 * 60 * 1000);
-                        }, msUntilEnd);
-                    }
-                });
-            })
+            .then(data => applyOccupancies(Array.isArray(data) ? data : []))
             .catch(err => console.error(err));
-    };
+    }, [applyOccupancies]);
 
     fetchOccupanciesRef.current = fetchOccupancies;
 
-    const fetchReservations = () => {
+    const fetchReservations = useCallback(() => {
         authFetch('/facility-reservations')
             .then(res => res.json())
-            .then(data => setReservations(data))
+            .then(data => setReservations(Array.isArray(data) ? data : []))
             .catch(err => console.error(err));
-    };
+    }, []);
 
-    const fetchFacilityImages = () => {
+    const fetchFacilityImages = useCallback(() => {
         authFetch('/facility-images')
             .then(res => res.ok ? res.json() : [])
             .then(data => {
@@ -139,7 +143,26 @@ function Facilities(){
                 setFacilityImages(nextFacilityImages);
             })
             .catch(err => console.error(err));
-    };
+    }, []);
+
+    const refreshFacilityPage = useCallback(() => {
+        fetchFacilityImages();
+
+        if (role === 'studentOfficer') {
+            fetchOccupancies();
+        }
+        if (role === 'systemAdmin') {
+            fetchReservations();
+        }
+    }, [fetchFacilityImages, fetchOccupancies, fetchReservations, role]);
+
+    const applyFacilitySnapshot = useCallback((facilities = {}) => {
+        const occupancyData = Array.isArray(facilities.occupancies) ? facilities.occupancies : [];
+        const reservationData = Array.isArray(facilities.reservations) ? facilities.reservations : [];
+
+        applyOccupancies(occupancyData);
+        setReservations(reservationData);
+    }, [applyOccupancies]);
 
     const handleFacilityImageUpdated = (item) => {
         if (!item?.floorId || !item?.roomName || !item?.imageUrl) return;
@@ -163,19 +186,17 @@ function Facilities(){
     };
 
     useEffect(() => {
-        fetchFacilityImages();
+        const initialFetch = setTimeout(refreshFacilityPage, 0);
+        const unsubscribe = subscribeToRealtimeSnapshots({
+            onSnapshot: (snapshot) => applyFacilitySnapshot(snapshot?.facilities),
+            onError: refreshFacilityPage,
+        });
 
-        if (role === 'studentOfficer') {
-            fetchOccupancies();
-            const interval = setInterval(fetchOccupancies, 60000);
-            return () => clearInterval(interval);
-        }
-        if (role === 'systemAdmin') {
-            fetchReservations();
-            const interval = setInterval(fetchReservations, 5000);
-            return () => clearInterval(interval);
-        }
-    }, []);
+        return () => {
+            clearTimeout(initialFetch);
+            unsubscribe();
+        };
+    }, [applyFacilitySnapshot, refreshFacilityPage]);
 
     const handleEndOccupyFacilityClick = (occupancy) => {
         setSelectedOccupancy(occupancy);

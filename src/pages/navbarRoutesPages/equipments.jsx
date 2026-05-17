@@ -15,6 +15,7 @@ import {
     getRequesterDetails,
     getRequesterSection,
     isBookingPastEnd,
+    subscribeToRealtimeSnapshots,
 } from '../../components/export/utility.jsx';
 
 
@@ -140,17 +141,35 @@ function Equipments(){
 
     fetchAllRef.current = fetchAll;
 
-    useEffect(() => {
+    const refreshEquipmentPage = useCallback(() => {
         fetchAll();
-        const interval = setInterval(fetchAll, role === 'systemAdmin' ? 5000 : 60000);
-        return () => clearInterval(interval);
-    }, [role, fetchAll]);
+        fetchEquipmentItems();
+    }, [fetchAll, fetchEquipmentItems]);
+
+    const applyEquipmentSnapshot = useCallback((equipment = {}) => {
+        const pendingData = Array.isArray(equipment.pendingRequests) ? equipment.pendingRequests : [];
+        const approvedData = Array.isArray(equipment.approvedRequests) ? equipment.approvedRequests : [];
+        const statusesData = Array.isArray(equipment.statuses) ? equipment.statuses : [];
+
+        setPendingRequests(pendingData);
+        setApprovedRequests(approvedData);
+        setEquipmentStatuses(statusesData);
+        setFetchError('');
+        checkOvertime(approvedData);
+    }, [checkOvertime]);
 
     useEffect(() => {
-        fetchEquipmentItems();
-        const interval = setInterval(fetchEquipmentItems, 5000);
-        return () => clearInterval(interval);
-    }, [fetchEquipmentItems]);
+        const initialFetch = setTimeout(refreshEquipmentPage, 0);
+        const unsubscribe = subscribeToRealtimeSnapshots({
+            onSnapshot: (snapshot) => applyEquipmentSnapshot(snapshot?.equipment),
+            onError: refreshEquipmentPage,
+        });
+
+        return () => {
+            clearTimeout(initialFetch);
+            unsubscribe();
+        };
+    }, [applyEquipmentSnapshot, refreshEquipmentPage]);
 
     const handleApprove = async (id) => {
         setLoadingAction(id + '-approve');

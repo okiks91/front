@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 
 import Navbar from '../../../components/navbar.jsx';
-import { authFetch, formatTime, getRequesterDetails, getRequesterSection } from '../../../components/export/utility.jsx';
+import { authFetch, formatTime, getRequesterDetails, getRequesterSection, subscribeToRealtimeSnapshots } from '../../../components/export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/history.css';
@@ -62,7 +62,7 @@ function History() {
     const [facilityHistory, setFacilityHistory] = useState([]);
     const [historyErrors, setHistoryErrors] = useState({});
 
-    const fetchHistory = async () => {
+    const fetchHistory = useCallback(async () => {
         const [equipmentResult, facilityResult] = await Promise.all([
             fetchHistoryList('/equipment-history', ['history', 'equipmentHistory', 'data'], 'Could not load equipment history.'),
             fetchHistoryList('/facility-history', ['history', 'facilityHistory', 'data'], 'Could not load facility history.'),
@@ -75,16 +75,26 @@ function History() {
             equipment: equipmentResult.error,
             facility: facilityResult.error,
         });
-    };
+    }, []);
+
+    const applyHistorySnapshot = useCallback((history = {}) => {
+        setEquipmentHistory(Array.isArray(history.equipment) ? history.equipment : []);
+        setFacilityHistory(Array.isArray(history.facilities) ? history.facilities : []);
+        setHistoryErrors({});
+    }, []);
 
     useEffect(() => {
         const initialFetch = setTimeout(fetchHistory, 0);
-        const interval = setInterval(fetchHistory, 5000);
+        const unsubscribe = subscribeToRealtimeSnapshots({
+            onSnapshot: (snapshot) => applyHistorySnapshot(snapshot?.history),
+            onError: fetchHistory,
+        });
+
         return () => {
             clearTimeout(initialFetch);
-            clearInterval(interval);
+            unsubscribe();
         };
-    }, []);
+    }, [applyHistorySnapshot, fetchHistory]);
 
     const sortedEquipmentHistory = sortHistoryRows(equipmentHistory);
     const sortedFacilityHistory = sortHistoryRows(facilityHistory);
