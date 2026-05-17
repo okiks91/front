@@ -13,7 +13,7 @@ import "../../styles/navbarRoutes/users.css";
 
 const USER_CATEGORIES = [
     { id: "studentOfficer", label: "Student Officer" },
-    { id: "schoolFaculty", label: "School Admin" },
+    { id: "schoolFaculty", label: "School Faculty" },
 ];
 
 const readUsersResponse = async (response) => {
@@ -155,7 +155,7 @@ function Users(){
                                             <td>{getPositionLabel(user.position) || "-"}</td>
                                         </>
                                     )}
-                                    {role === "schoolFaculty" && <td>School Admin</td>}
+                                    {role === "schoolFaculty" && <td>School Faculty</td>}
                                     <td>
                                         <button
                                             className="delete-user-btn"

@@ -65,7 +65,7 @@ function RegisterSchoolAdmin(){
             <form className='register-schoolAdmin' onSubmit={handleRegister} noValidate>
                 <div className="create"> 
                     <h1>Create an</h1>
-                    <h2>School Admin Account</h2>
+                    <h2>School Faculty Account</h2>
                 </div>
 
                 <div className="form-schoolAdmin">

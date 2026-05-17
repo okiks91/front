@@ -210,7 +210,7 @@ function Profile(){
                         <div className="profile-container-systemSchoolAdmin">
                             {renderAvatarUploader()}
 
-                            <h1 className="profile-name-systemSchoolAdmin">{fullName || (role === "systemAdmin" ? "System Admin" : "School Admin")}</h1>
+                            <h1 className="profile-name-systemSchoolAdmin">{fullName || (role === "systemAdmin" ? "System Admin" : "School Faculty")}</h1>
                             <button 
                                 className="update-btn-systemSchoolAdmin"
                                 onClick={handleChangePassword}

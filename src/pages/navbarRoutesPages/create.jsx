@@ -23,7 +23,7 @@ function Create() {
                     onChange={(e) => setWho(e.target.value)}
                 >
                     <option value="studentOfficer">Student Officer</option>
-                    <option value="schoolFaculty">School Admin</option>
+                    <option value="schoolFaculty">School Faculty</option>
                 </select>
             </div>
 

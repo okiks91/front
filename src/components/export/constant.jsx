@@ -283,7 +283,7 @@ export const registrationWhoData = [
     },
     {
         id: 'schoolFaculty',
-        who: 'School Admin',
+        who: 'School Faculty',
         component: RegisterSchoolAdmin
     }
 ]
