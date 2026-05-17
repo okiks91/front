@@ -6,7 +6,7 @@ import { faCamera, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Navbar from '../../../components/navbar.jsx';
 import ChangePasswordModal from "../../../components/navbarRoutes/profile/changePasswordModal.jsx";
-import { authFetch, formatYearLevel, getCookie, getCourseLabel, getPositionLabel, setCookie } from "../../../components/export/utility.jsx";
+import { authFetch, formatYearLevel, getCourseLabel, getPositionLabel, getStoredUser, setCookie } from "../../../components/export/utility.jsx";
 
 
 import '../../../styles/profile/profile.css';
@@ -16,7 +16,7 @@ const PROFILE_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif
 
 const readStoredUser = () => {
     try {
-        return JSON.parse(getCookie("user") || 'null');
+        return getStoredUser();
     } catch {
         return null;
     }

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import EditableCardImage from '../../export/editableCardImage.jsx';
 import ReserveFacilityModal from './reserveFacilityModal.jsx';
 import OccupyFacilityModal from './occupyFacilityModal.jsx';
-import { authFetch, getCookie } from '../../export/utility.jsx';
+import { authFetch, getStoredUser } from '../../export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/facilities/facilityCard.css';
@@ -12,7 +12,7 @@ import '../../../styles/navbarRoutes/facilities/facilityCard.css';
 
 function FacilityCard({ imageUrl, roomName, floorId, floorName, onOccupied, onImageUpdated }){
 
-    const user = JSON.parse(getCookie("user") || 'null');
+    const user = getStoredUser();
     const role = user?.role;
     const [showReserveFacilityModal, setReserveFacilityModal] = useState(false);
     const [showOccupyFacilityModal, setOccupyFacilityModal] = useState(false);

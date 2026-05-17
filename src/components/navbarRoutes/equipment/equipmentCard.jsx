@@ -7,7 +7,7 @@ import { faEllipsis, faTrash } from '@fortawesome/free-solid-svg-icons';
 import EditableCardImage from '../../export/editableCardImage.jsx';
 import RequestEquipmentModal from './requestEquipmentModal.jsx';
 import ReserveEquipmentModal from './reserveEquipmentModal.jsx';
-import { authFetch, getCookie } from '../../export/utility';
+import { authFetch, getStoredUser } from '../../export/utility';
 
 
 import '../../../styles/navbarRoutes/equipment/equipmentCard.css';
@@ -22,7 +22,7 @@ function EquipmentCard({
     onDeleted
 }){
 
-    const user = JSON.parse(getCookie("user") || 'null');
+    const user = getStoredUser();
     const role = user?.role;
     const [modalType, setModalType] = useState(null);
     const [showActionMenu, setShowActionMenu] = useState(false);

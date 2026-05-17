@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatTime } from './utility.jsx';
 
 function OverTimeModal({ items, onClose }) {
     const isEnded = items.length > 0 && items[0].ended;
@@ -31,7 +32,7 @@ function OverTimeModal({ items, onClose }) {
                         <ul style={{ textAlign: 'left', marginBottom: '16px', paddingLeft: '20px' }}>
                             {items.map((item, i) => (
                                 <li key={i} style={{ marginBottom: '6px' }}>
-                                    <strong>{item.name}</strong> — ended at {item.endTime}
+                                    <strong>{item.name}</strong> — ended at {formatTime(item.endTime)}
                                 </li>
                             ))}
                         </ul>

@@ -10,10 +10,12 @@ import { facilitiesArray }  from '../../components/export/constant.jsx';
 import {
     authFetch,
     formatSectionLabel,
+    formatTime,
+    formatTimeRange,
     formatYearLevel,
     getBookingEndDateTime,
-    getCookie,
     getCourseLabel,
+    getStoredUser,
     isBookingPastEnd,
 } from '../../components/export/utility.jsx';
 
@@ -24,7 +26,7 @@ const getFacilityImageKey = (floorId, roomName) => `${floorId}::${roomName}`.toL
 
 function Facilities(){
 
-    const user = JSON.parse(getCookie("user") || 'null');
+    const user = getStoredUser();
     const role = user?.role;
 
     const course = getCourseLabel(user?.course);
@@ -180,20 +182,6 @@ function Facilities(){
         setEndOccupyFacilityModal(true);
     };
 
-    const formatTime = (time) => {
-        if (!time) return '-';
-        const [hours, minutes] = time.split(':');
-        const hour = parseInt(hours, 10);
-        const period = hour >= 12 ? 'PM' : 'AM';
-        const displayHour = hour % 12 || 12;
-        return `${displayHour}:${minutes} ${period}`;
-    };
-
-    const formatTimeRange = (startTime, endTime) => {
-        if (!startTime && !endTime) return '-';
-        return `${formatTime(startTime)} - ${formatTime(endTime)}`;
-    };
-
     const formatDateRange = (startDate, endDate) => {
         if (!startDate && !endDate) return '-';
         if (!endDate || startDate === endDate) return startDate || endDate;
@@ -244,8 +232,8 @@ function Facilities(){
                                     <tr key={o.id}>
                                         <td>{o.floorName}</td>
                                         <td>{o.roomName}</td>
-                                        <td>{o.startTime}</td>
-                                        <td>{o.endTime}</td>
+                                        <td>{formatTime(o.startTime)}</td>
+                                        <td>{formatTime(o.endTime)}</td>
                                         <td>
                                             {o.requesterEmail === user?.email ? (
                                                 <button

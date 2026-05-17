@@ -2,7 +2,7 @@ import React from 'react';
 
 
 import EditableCardImage from '../../export/editableCardImage.jsx';
-import { authFetch, getCookie } from '../../export/utility.jsx';
+import { authFetch, getStoredUser } from '../../export/utility.jsx';
 import '../../../styles/navbarRoutes/about/memberCard.css';
 
 
@@ -12,7 +12,7 @@ function MemberCard({
     role,
     onImageUpdated
 }){
-    const user = JSON.parse(getCookie("user") || 'null');
+    const user = getStoredUser();
     const isAdmin = user?.role === 'systemAdmin';
 
     const handleImageUpload = async (file) => {

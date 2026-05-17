@@ -8,9 +8,10 @@ import OverTimeModal from '../../components/export/OverTimeModal.jsx';
 import {
     authFetch,
     formatSectionLabel,
+    formatTimeRange,
     formatYearLevel,
-    getCookie,
     getCourseLabel,
+    getStoredUser,
     getRequesterDetails,
     getRequesterSection,
     isBookingPastEnd,
@@ -48,7 +49,7 @@ const readEquipmentItemsResponse = async (response) => {
 
 function Equipments(){
 
-    const user = JSON.parse(getCookie("user") || 'null');
+    const user = getStoredUser();
     const role = user?.role;
     const canRequestEquipment = role === "studentOfficer" || role === "schoolFaculty";
 
@@ -205,20 +206,6 @@ function Equipments(){
             toast.error(e.message || 'Failed to remove equipment status.');
         }
         setLoadingAction(null);
-    };
-
-    const formatTime = (t) => {
-        if (!t) return '—';
-        const [h, m] = t.split(':');
-        const hour = parseInt(h);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const display = hour % 12 || 12;
-        return `${display}:${m} ${ampm}`;
-    };
-
-    const formatTimeRange = (startTime, endTime) => {
-        if (!startTime && !endTime) return '-';
-        return `${formatTime(startTime)} - ${formatTime(endTime)}`;
     };
 
     const formatDateRange = (startDate, endDate) => {

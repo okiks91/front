@@ -2,10 +2,57 @@ import React, { useState, useEffect } from "react";
 
 
 import Navbar from '../../../components/navbar.jsx';
-import { authFetch, getRequesterDetails, getRequesterSection } from '../../../components/export/utility.jsx';
+import { authFetch, formatTime, getRequesterDetails, getRequesterSection } from '../../../components/export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/history.css';
+
+const readArrayResponse = async (response, keys = [], fallbackMessage = 'Could not load history.') => {
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        throw new Error(data.message || fallbackMessage);
+    }
+
+    if (Array.isArray(data)) return data;
+
+    for (const key of keys) {
+        if (Array.isArray(data?.[key])) return data[key];
+    }
+
+    return [];
+};
+
+const fetchHistoryList = async (url, keys, fallbackMessage) => {
+    try {
+        const response = await authFetch(url);
+        return {
+            data: await readArrayResponse(response, keys, fallbackMessage),
+            error: '',
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            data: [],
+            error: error.message || fallbackMessage,
+        };
+    }
+};
+
+const sortHistoryRows = (history) => {
+    return [...history].sort((a, b) =>
+        new Date(b.date || 0) - new Date(a.date || 0) ||
+        (b.startTime || '').localeCompare(a.startTime || '')
+    );
+};
+
+const renderTableMessage = (message, colSpan) => (
+    <tr>
+        <td colSpan={colSpan} style={{ textAlign: 'center', padding: '16px', color: '#666' }}>
+            {message}
+        </td>
+    </tr>
+);
 
 
 function History() {
@@ -13,19 +60,34 @@ function History() {
     const [tableHistory, setTableHistory] = useState("equipmentHistory");
     const [equipmentHistory, setEquipmentHistory] = useState([]);
     const [facilityHistory, setFacilityHistory] = useState([]);
+    const [historyErrors, setHistoryErrors] = useState({});
 
-    const fetchHistory = () => {
-        authFetch('/equipment-history')
-            .then(res => res.json()).then(data => setEquipmentHistory(data)).catch(console.error);
-        authFetch('/facility-history')
-            .then(res => res.json()).then(data => setFacilityHistory(data)).catch(console.error);
+    const fetchHistory = async () => {
+        const [equipmentResult, facilityResult] = await Promise.all([
+            fetchHistoryList('/equipment-history', ['history', 'equipmentHistory', 'data'], 'Could not load equipment history.'),
+            fetchHistoryList('/facility-history', ['history', 'facilityHistory', 'data'], 'Could not load facility history.'),
+        ]);
+
+        if (!equipmentResult.error) setEquipmentHistory(equipmentResult.data);
+        if (!facilityResult.error) setFacilityHistory(facilityResult.data);
+
+        setHistoryErrors({
+            equipment: equipmentResult.error,
+            facility: facilityResult.error,
+        });
     };
 
     useEffect(() => {
-        fetchHistory();
+        const initialFetch = setTimeout(fetchHistory, 0);
         const interval = setInterval(fetchHistory, 5000);
-        return () => clearInterval(interval);
+        return () => {
+            clearTimeout(initialFetch);
+            clearInterval(interval);
+        };
     }, []);
+
+    const sortedEquipmentHistory = sortHistoryRows(equipmentHistory);
+    const sortedFacilityHistory = sortHistoryRows(facilityHistory);
     
     return(
         <>
@@ -62,7 +124,9 @@ function History() {
                                     </tr>
                                 </thead>  
                                 <tbody className='equipment-tableHistory-body'>
-                                    {[...equipmentHistory].sort((a, b) => new Date(b.date) - new Date(a.date) || b.startTime.localeCompare(a.startTime)).map((r, index) => (
+                                    {historyErrors.equipment ? renderTableMessage(historyErrors.equipment, 9) : (
+                                        sortedEquipmentHistory.length === 0 ? renderTableMessage('No equipment history found.', 9) :
+                                        sortedEquipmentHistory.map((r, index) => (
                                         <tr key={r.id}>
                                             <td>{index + 1}</td>
                                             <td>{r.date}</td>
@@ -70,11 +134,11 @@ function History() {
                                             <td>{r.requesterName}</td>
                                             <td>{getRequesterDetails(r)}</td>
                                             <td>{getRequesterSection(r)}</td>
-                                            <td>{r.startTime}</td>
-                                            <td>{r.endTime}</td>
+                                            <td>{formatTime(r.startTime)}</td>
+                                            <td>{formatTime(r.endTime)}</td>
                                             <td>Returned</td>
                                         </tr>
-                                    ))}
+                                    )))}
                                 </tbody>
                             </table>
                         </section>  
@@ -102,7 +166,9 @@ function History() {
                                     </tr>
                                 </thead>  
                                 <tbody className='facilities-tableHistory-body'>
-                                    {[...facilityHistory].sort((a, b) => new Date(b.date) - new Date(a.date) || b.startTime.localeCompare(a.startTime)).map((r, index) => (
+                                    {historyErrors.facility ? renderTableMessage(historyErrors.facility, 10) : (
+                                        sortedFacilityHistory.length === 0 ? renderTableMessage('No facility history found.', 10) :
+                                        sortedFacilityHistory.map((r, index) => (
                                         <tr key={r.id}>
                                             <td>{index + 1}</td>
                                             <td>{r.date}</td>
@@ -111,11 +177,11 @@ function History() {
                                             <td>{r.requesterName}</td>
                                             <td>{getRequesterDetails(r)}</td>
                                             <td>{getRequesterSection(r)}</td>
-                                            <td>{r.startTime}</td>
-                                            <td>{r.endTime}</td>
+                                            <td>{formatTime(r.startTime)}</td>
+                                            <td>{formatTime(r.endTime)}</td>
                                             <td>Finished</td>
                                         </tr>
-                                    ))}
+                                    )))}
                                 </tbody>
                             </table>
                         </section>

@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 
 
 import { schoolUrl, navigationData } from '../components/export/constant.jsx';
-import { authFetch, getCookie, deleteCookie } from './export/utility.jsx';
+import { authFetch, getStoredUser, deleteCookie } from './export/utility.jsx';
 
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,7 +24,7 @@ const getStoredLogoUrl = () => {
 function Navbar(){
 
     const navigate = useNavigate();
-    const [user, setUser] = useState();
+    const [user] = useState(getStoredUser);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [logoUrl, setLogoUrl] = useState(getStoredLogoUrl);
 
@@ -44,11 +44,6 @@ function Navbar(){
         deleteCookie("authToken");
         window.location.href ="/";
     }
-
-    
-    useEffect(() => {
-        setUser(JSON.parse(getCookie("user")));
-    }, [])
 
     useEffect(() => {
         authFetch('/school-logo')

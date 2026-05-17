@@ -28,8 +28,35 @@ export const deleteCookie = (name) => {
     document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
+export const normalizeRole = (role) => {
+    const compactRole = String(role || '').replace(/[\s_-]/g, '').toLowerCase();
+
+    if (compactRole === 'schoolfaculty' || compactRole === 'teacherfaculty' || compactRole === 'schooladmin') return 'schoolFaculty';
+    if (compactRole === 'studentofficer') return 'studentOfficer';
+    if (compactRole === 'systemadmin') return 'systemAdmin';
+
+    return role || '';
+}
+
+export const normalizeUser = (user) => {
+    if (!user) return null;
+
+    return {
+        ...user,
+        role: normalizeRole(user.role),
+    };
+}
+
+export const getStoredUser = () => {
+    try {
+        return normalizeUser(JSON.parse(getCookie("user") || 'null'));
+    } catch {
+        return null;
+    }
+}
+
 export const setUserSession = (user, token, days = 1) => {
-    setCookie('user', JSON.stringify(user), days);
+    setCookie('user', JSON.stringify(normalizeUser(user)), days);
     setCookie('authToken', token, days);
 }
 
@@ -152,6 +179,36 @@ export const getLocalDateString = (date = new Date()) => {
 
 export const getCurrentTimeString = (date = new Date()) => {
     return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
+export const formatTime = (time) => {
+    if (!time || String(time).toLowerCase() === 'n/a') return '-';
+
+    const timeText = String(time).trim();
+    const existingAmPm = timeText.match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]m)$/i);
+
+    if (existingAmPm) {
+        const hour = Number(existingAmPm[1]);
+        const minutes = existingAmPm[2] || '00';
+        const period = existingAmPm[3].toUpperCase();
+        return `${hour}:${minutes} ${period}`;
+    }
+
+    const timeParts = timeText.match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?$/);
+    if (!timeParts) return timeText;
+
+    const hour = Number(timeParts[1]);
+    const minutes = timeParts[2] || '00';
+    if (Number.isNaN(hour) || hour < 0 || hour > 23) return timeText;
+
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${period}`;
+}
+
+export const formatTimeRange = (startTime, endTime) => {
+    if (!startTime && !endTime) return '-';
+    return `${formatTime(startTime)} - ${formatTime(endTime)}`;
 }
 
 export const parseLocalDateTime = (dateString, timeString) => {

@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 
 
 import Navbar from '../../../components/navbar.jsx';
-import { authFetch, formatSectionLabel, getRequesterDetails, getRequesterSection } from '../../../components/export/utility.jsx';
+import { authFetch, formatTimeRange, getRequesterDetails, getRequesterSection } from '../../../components/export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/tables.css';
 
-const readArrayResponse = async (response, keys = []) => {
-    if (!response.ok) throw new Error('Could not load table data.');
+const readArrayResponse = async (response, keys = [], fallbackMessage = 'Could not load table data.') => {
+    const data = await response.json().catch(() => ({}));
 
-    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || fallbackMessage);
+    }
+
     if (Array.isArray(data)) return data;
 
     for (const key of keys) {
@@ -20,22 +23,20 @@ const readArrayResponse = async (response, keys = []) => {
     return [];
 };
 
-const formatTime = (time) => {
-    if (!time || time === 'n/a') return '-';
-
-    const [hours, minutes = '00'] = String(time).split(':');
-    const hour = Number(hours);
-
-    if (Number.isNaN(hour)) return time;
-
-    const period = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes} ${period}`;
-};
-
-const formatTimeRange = (startTime, endTime) => {
-    if (!startTime && !endTime) return '-';
-    return `${formatTime(startTime)} - ${formatTime(endTime)}`;
+const fetchTableList = async (url, keys, fallbackMessage) => {
+    try {
+        const response = await authFetch(url);
+        return {
+            data: await readArrayResponse(response, keys, fallbackMessage),
+            error: '',
+        };
+    } catch (error) {
+        console.error(error);
+        return {
+            data: [],
+            error: error.message || fallbackMessage,
+        };
+    }
 };
 
 const formatDateRange = (startDate, endDate) => {
@@ -58,6 +59,14 @@ const formatDetailsValue = (details) => {
     return String(details || '-').replace(/\bSection\s+([^-]*?)(?=\s*-|$)/gi, (_, section) => section.trim());
 };
 
+const renderTableMessage = (message, colSpan) => (
+    <tr>
+        <td colSpan={colSpan} style={{ textAlign: 'center', padding: '16px', color: '#666' }}>
+            {message}
+        </td>
+    </tr>
+);
+
 
 function Tables() {
 
@@ -66,36 +75,41 @@ function Tables() {
     const [equipmentStatuses, setEquipmentStatuses] = useState([]);
     const [facilityOccupancies, setFacilityOccupancies] = useState([]);
     const [facilityReservations, setFacilityReservations] = useState([]);
+    const [tableErrors, setTableErrors] = useState({});
 
     const fetchAll = async () => {
-        try {
-            const [equipmentRequestsRes, equipmentStatusesRes, facilityOccupanciesRes, facilityReservationsRes] = await Promise.all([
-                authFetch('/equipment-requests?status=approved&scope=all'),
-                authFetch('/equipment-statuses?scope=all'),
-                authFetch('/facility-occupancies?scope=all'),
-                authFetch('/facility-reservations?scope=all'),
-            ]);
+        const [
+            equipmentRequestsResult,
+            equipmentStatusesResult,
+            facilityOccupanciesResult,
+            facilityReservationsResult,
+        ] = await Promise.all([
+            fetchTableList('/equipment-requests?status=approved&scope=all', ['requests', 'equipmentRequests', 'approvedRequests', 'data'], 'Could not load active equipment requests.'),
+            fetchTableList('/equipment-statuses?scope=all', ['statuses', 'equipmentStatuses', 'data'], 'Could not load equipment statuses.'),
+            fetchTableList('/facility-occupancies?scope=all', ['occupancies', 'facilityOccupancies', 'data'], 'Could not load active facility occupancies.'),
+            fetchTableList('/facility-reservations?scope=all', ['reservations', 'facilityReservations', 'data'], 'Could not load facility reservations.'),
+        ]);
 
-            const [equipmentRequestsData, equipmentStatusesData, facilityOccupanciesData, facilityReservationsData] = await Promise.all([
-                readArrayResponse(equipmentRequestsRes, ['requests', 'equipmentRequests', 'approvedRequests', 'data']),
-                readArrayResponse(equipmentStatusesRes, ['statuses', 'equipmentStatuses', 'data']),
-                readArrayResponse(facilityOccupanciesRes, ['occupancies', 'facilityOccupancies', 'data']),
-                readArrayResponse(facilityReservationsRes, ['reservations', 'facilityReservations', 'data']),
-            ]);
+        if (!equipmentRequestsResult.error) setEquipmentRequests(equipmentRequestsResult.data);
+        if (!equipmentStatusesResult.error) setEquipmentStatuses(equipmentStatusesResult.data);
+        if (!facilityOccupanciesResult.error) setFacilityOccupancies(facilityOccupanciesResult.data);
+        if (!facilityReservationsResult.error) setFacilityReservations(facilityReservationsResult.data);
 
-            setEquipmentRequests(equipmentRequestsData);
-            setEquipmentStatuses(equipmentStatusesData);
-            setFacilityOccupancies(facilityOccupanciesData);
-            setFacilityReservations(facilityReservationsData);
-        } catch (error) {
-            console.error(error);
-        }
+        setTableErrors({
+            equipmentRequests: equipmentRequestsResult.error,
+            equipmentStatuses: equipmentStatusesResult.error,
+            facilityOccupancies: facilityOccupanciesResult.error,
+            facilityReservations: facilityReservationsResult.error,
+        });
     };
 
     useEffect(() => {
-        fetchAll();
+        const initialFetch = setTimeout(fetchAll, 0);
         const interval = setInterval(fetchAll, 5000);
-        return () => clearInterval(interval);
+        return () => {
+            clearTimeout(initialFetch);
+            clearInterval(interval);
+        };
     }, []);
 
     const sortByDateTimeDesc = (a, b) => {
@@ -165,6 +179,9 @@ function Tables() {
         })),
     ].sort(sortByDateTimeDesc);
 
+    const equipmentErrors = [tableErrors.equipmentRequests, tableErrors.equipmentStatuses].filter(Boolean);
+    const facilityErrors = [tableErrors.facilityOccupancies, tableErrors.facilityReservations].filter(Boolean);
+
     return(
         <>
             <Navbar/>
@@ -185,6 +202,9 @@ function Tables() {
                     <div className="table-equipment-main-container">
                         <section className='equipment-table-container'>
                             <h1>Equipment Data Table</h1>  
+                            {equipmentErrors.map(error => (
+                                <p key={error} style={{ padding: '8px 0', color: 'maroon' }}>{error}</p>
+                            ))}
                             <hr/> 
                             <table className='equipment-table'>   
                                 <thead className='equipment-table-header'>
@@ -200,7 +220,7 @@ function Tables() {
                                     </tr>
                                 </thead>  
                                 <tbody className='equipment-table-body'>
-                                    {equipmentRows.map((row, index) => (
+                                    {equipmentRows.length === 0 ? renderTableMessage('No equipment currently in use.', 8) : equipmentRows.map((row, index) => (
                                         <tr key={`${row.type}-${row.id}`}>
                                             <td>{index + 1}</td>
                                             <td>{row.equipment}</td>
@@ -222,6 +242,9 @@ function Tables() {
                     <div className="table-facility-main-container">
                         <section className='facility-table-container'>
                             <h1>Facilities Data Table</h1>  
+                            {facilityErrors.map(error => (
+                                <p key={error} style={{ padding: '8px 0', color: 'maroon' }}>{error}</p>
+                            ))}
                             <hr/> 
                             <table className='facilities-table'>   
                                 <thead className='facilities-table-header'>
@@ -238,7 +261,7 @@ function Tables() {
                                     </tr>
                                 </thead>  
                                 <tbody className='facilities-table-body'>
-                                    {facilityRows.map((row, index) => (
+                                    {facilityRows.length === 0 ? renderTableMessage('No facilities currently in use.', 9) : facilityRows.map((row, index) => (
                                         <tr key={`${row.type}-${row.id}`}>
                                             <td>{index + 1}</td>
                                             <td>{row.floorName}</td>

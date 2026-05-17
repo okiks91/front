@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getAuthToken, getCookie } from './utility.jsx';
+import { getAuthToken, getCookie, normalizeUser } from './utility.jsx';
 
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     let user;
 
     try {
-        user = JSON.parse(userCookie);
+        user = normalizeUser(JSON.parse(userCookie));
 
         // for Debugging
         console.log("RAW COOKIE:", userCookie);

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import AddEquipmentModal from './addEquipmentModal.jsx';
 import EquipmentCard from './equipmentCard.jsx';
 import { equipmentArray } from '../../export/constant.jsx';
-import { getCookie } from '../../export/utility.jsx';
+import { getStoredUser } from '../../export/utility.jsx';
 
 
 import '../../../styles/navbarRoutes/equipment/equipmentCardWrapper.css';
@@ -24,7 +24,7 @@ const sortEquipmentByNameAndNumber = (equipment) => {
 
 function EquipmentCardWrapper({ equipmentItems = [], deletedEquipmentNames = [], equipmentStatuses = [], onEquipmentAdded, onStatusChanged }){
 
-    const user = JSON.parse(getCookie("user") || 'null');
+    const user = getStoredUser();
     const role = user?.role;
     const [showAddEquipmentModal, setShowAddEquipmentModal] = useState(false);
     const [locallyDeletedEquipmentNames, setLocallyDeletedEquipmentNames] = useState([]);
